@@ -1,0 +1,456 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Your Web Design Company</title>
+
+  <!-- Google font + Font Awesome (online libs allowed) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a2d9b1c7a1.js" crossorigin="anonymous"></script>
+
+  <style>
+    :root{
+      --bg-grad: linear-gradient(135deg, #0f62fe 0%, #7c3aed 45%, #ff3b6b 100%);
+      --glass: rgba(255,255,255,0.06);
+      --card: rgba(255,255,255,0.04);
+      --muted: rgba(255,255,255,0.8);
+      --accent: #ffd6e0;
+      --max-width: 1100px;
+      --radius: 14px;
+      color-scheme: light;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: radial-gradient(circle at 10% 10%, rgba(124,58,237,0.07), transparent 10%),
+                  radial-gradient(circle at 90% 90%, rgba(255,59,107,0.04), transparent 10%),
+                  #0b0f1a;
+      color: #fff;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+      padding-bottom:40px;
+    }
+
+    /* Container */
+    .wrap{
+      max-width:var(--max-width);
+      margin:28px auto;
+      padding:20px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:20px;
+      box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    /* Header */
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:12px 8px;
+    }
+    .logo{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .logo .mark{
+      width:56px; height:56px; border-radius:12px;
+      background: var(--bg-grad);
+      display:flex; align-items:center; justify-content:center;
+      box-shadow: 0 6px 18px rgba(12,8,50,0.6), inset 0 -4px 28px rgba(0,0,0,0.18);
+      font-weight:800; color:#fff; font-size:20px;
+    }
+    .brand{
+      line-height:1;
+    }
+    .brand .name{font-weight:700; font-size:18px; letter-spacing:0.2px}
+    .brand .tag{font-size:12px; color:rgba(255,255,255,0.7)}
+
+    /* Nav layout: centered menu and right CTA */
+    .nav-area{
+      display:flex;
+      align-items:center;
+      gap:18px;
+      flex:1;
+      justify-content:center;
+    }
+    nav ul{
+      list-style:none; margin:0; padding:0;
+      display:flex; gap:18px; align-items:center;
+      backdrop-filter: blur(4px);
+    }
+    nav a{
+      text-decoration:none;
+      padding:8px 12px;
+      border-radius:10px;
+      color:var(--muted);
+      font-weight:600;
+      transition: all 220ms ease;
+      display:inline-flex;
+      align-items:center; gap:8px;
+    }
+    nav a:hover{
+      transform:translateY(-3px);
+      color:white;
+      text-shadow: 0 6px 18px rgba(124,58,237,0.15);
+    }
+
+    .header-cta{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-self:flex-end;
+    }
+    .btn{
+      background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      padding:10px 16px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.06);
+      color:#fff;
+      font-weight:700;
+      cursor:pointer;
+      display:inline-flex; gap:10px; align-items:center;
+      transition:transform .18s ease, box-shadow .18s ease;
+    }
+    .btn.primary{
+      background: var(--bg-grad);
+      box-shadow: 0 8px 28px rgba(12, 10, 40, 0.5);
+    }
+    .btn:active{transform:translateY(1px)}
+
+    /* Hero / Sections */
+    .section{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:28px;
+      align-items:center;
+      padding:36px;
+      border-radius:12px;
+      margin:18px 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    /* First section: text left, image right */
+    .s1 .content h2{font-size:22px; margin:0 0 12px}
+    .s1 .content p{color:rgba(255,255,255,0.9)}
+    .s1 .image{
+      display:flex; justify-content:center; align-items:center;
+    }
+    .image img{
+      width:100%; max-width:420px; border-radius:12px;
+      box-shadow: 0 22px 60px rgba(12,8,50,0.5);
+      transform: translateY(0);
+      transition: transform .6s cubic-bezier(.2,.9,.3,1);
+    }
+    .section:hover .image img{ transform: translateY(-6px) rotate(-0.8deg); }
+
+    /* Second section: image left, text right */
+    .s2{ background: linear-gradient(120deg, rgba(124,58,237,0.04), rgba(15,98,254,0.02)); }
+    .s2 .content h2{font-size:22px; margin:0 0 12px}
+    .s2 .content p{color:rgba(255,255,255,0.92)}
+
+    /* Third section: CTA / catchphrase */
+    .s3{
+      text-align:center;
+      grid-template-columns: 1fr;
+      padding:36px;
+      background: linear-gradient(90deg, rgba(15,98,254,0.06), rgba(124,58,237,0.06));
+    }
+    .s3 h2{font-size:28px; margin:0 0 6px; letter-spacing:0.2px}
+    .s3 p{color:rgba(255,255,255,0.9); margin:0 0 18px; font-size:16px}
+    .s3 .cta-row{display:flex; gap:12px; justify-content:center; flex-wrap:wrap}
+
+    /* Footer */
+    footer{
+      margin-top:18px;
+      padding:26px;
+      border-radius:12px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.3));
+      display:flex; gap:30px; flex-wrap:wrap; justify-content:space-between;
+    }
+    .foot-col{min-width:160px}
+    .foot-col h4{margin:0 0 8px; font-size:15px}
+    .foot-col ul{list-style:none;padding:0;margin:0}
+    .foot-col a{display:block;color:rgba(255,255,255,0.85); text-decoration:none; padding:6px 0; font-size:14px}
+    .foot-bottom{
+      width:100%; margin-top:18px; border-top:1px dashed rgba(255,255,255,0.04);
+      padding-top:12px; text-align:center; color:rgba(255,255,255,0.6); font-size:13px;
+    }
+
+    /* Small devices */
+    @media (max-width:900px){
+      .section{grid-template-columns:1fr; padding:20px}
+      .nav-area{display:none}
+      header{padding:12px}
+      .header-cta{gap:8px}
+      .logo .mark{width:46px; height:46px}
+    }
+
+    /* Mobile header: show hamburger */
+    .hamburger{
+      display:none;
+      background:transparent; border:0; color:inherit; font-size:22px;
+      cursor:pointer;
+    }
+    @media (max-width:900px){
+      .hamburger{display:inline-flex}
+    }
+
+    /* Offcanvas mobile menu */
+    .mobile-menu{
+      display:none;
+      position:fixed; right:14px; top:78px;
+      background:linear-gradient(180deg, rgba(7,10,20,0.94), rgba(12,8,30,0.96));
+      padding:12px; border-radius:12px; box-shadow: 0 20px 50px rgba(2,6,23,0.6);
+      border:1px solid rgba(255,255,255,0.04);
+      z-index:1200;
+      min-width:220px;
+    }
+    .mobile-menu a{display:block; padding:10px 8px; color:var(--muted); text-decoration:none}
+    .mobile-menu a:hover{color:#fff}
+
+    /* small niceties */
+    .muted{color:rgba(255,255,255,0.7)}
+    .kbd{background:rgba(255,255,255,0.03); padding:6px 8px; border-radius:8px; font-weight:700}
+    .pill{padding:6px 10px; border-radius:999px; font-weight:700}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <header>
+      <div class="logo">
+        <div class="mark" aria-hidden="true">AW</div>
+        <div class="brand">
+          <div class="name">AreejSazz</div>
+          <div class="tag">Web Design & Solutions</div>
+        </div>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Open menu">
+        <i class="fa fa-bars"></i>
+      </button>
+
+      <div class="nav-area" role="navigation" aria-label="Main navigation">
+        <nav>
+          <ul>
+            <li><a href="#home" class="nav-link">Home</a></li>
+            <li><a href="#services" class="nav-link">Services</a></li>
+            <li><a href="#about" class="nav-link">About</a></li>
+            <li><a href="#upcoming" class="nav-link">Upcoming</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="header-cta">
+        <a class="btn" href="#contact" onclick="scrollToSection(event,'contact')"><i class="fa fa-envelope"></i> Contact</a>
+        <button class="btn primary" id="whatsappTop"><i class="fa fa-whatsapp"></i> WhatsApp</button>
+      </div>
+    </header>
+
+    <!-- Mobile menu (hidden by default) -->
+    <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+      <a href="#home" class="nav-link">Home</a>
+      <a href="#services" class="nav-link">Services</a>
+      <a href="#about" class="nav-link">About</a>
+      <a href="#upcoming" class="nav-link">Upcoming</a>
+      <a href="#contact" onclick="scrollToSection(event,'contact')">Contact</a>
+      <a href="#" id="whatsMobile">WhatsApp</a>
+    </div>
+
+    <!-- Section 1 -->
+    <section class="section s1" id="home" aria-labelledby="homeHeading">
+      <div class="content">
+        <h2 id="homeHeading">Professional Web Design that Converts</h2>
+        <p>
+          We build modern, responsive websites that reflect your brand and convert visitors into customers.
+          From fast-loading landing pages to full content-driven platforms — our designs focus on clarity,
+          performance and user experience so your business grows online.
+        </p>
+        <ul style="margin:12px 0 18px; padding-left:18px; color:rgba(255,255,255,0.9)">
+          <li>Custom responsive layouts</li>
+          <li>SEO-friendly & fast</li>
+          <li>E-commerce & booking systems</li>
+        </ul>
+        <div style="display:flex; gap:10px; align-items:center">
+          <button class="btn primary" id="whatsS1"><i class="fa fa-comments"></i> Contact via WhatsApp</button>
+          <a href="#services" class="btn" onclick="scrollToSection(event,'services')"><i class="fa fa-info-circle"></i> Our Services</a>
+        </div>
+      </div>
+
+      <div class="image" aria-hidden="true">
+        <!-- Replace image URL with your own if desired -->
+        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=2b1b2e6a2f6f3f3cc2b9a7dfd3f7f2ff" alt="web design concept">
+      </div>
+    </section>
+
+    <!-- Section 2 -->
+    <section class="section s2" id="services" aria-labelledby="servicesHeading">
+      <div class="image" aria-hidden="true" style="justify-content:flex-start">
+        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&s=48c3d2e1b9f6b74b8a1c3fb7d6f0a233" style="max-width:360px" alt="what you can achieve">
+      </div>
+      <div class="content">
+        <h2 id="servicesHeading">What can you achieve with a powerful website?</h2>
+        <p>
+          A great website is your 24/7 salesperson: it builds trust, captures leads, showcases offers,
+          and powers online sales. With the right structure and design you can expand reach, convert visitors,
+          and automate customer interactions.
+        </p>
+        <ol style="margin:12px 0 18px; padding-left:18px; color:rgba(255,255,255,0.95)">
+          <li>Attract targeted customers</li>
+          <li>Showcase products & services professionally</li>
+          <li>Automate bookings & inquiries</li>
+        </ol>
+        <div style="display:flex; gap:10px; align-items:center; justify-content:flex-start">
+          <button class="btn primary" id="whatsS2"><i class="fa fa-whatsapp"></i> Free Consultation</button>
+          <a href="#about" class="btn" onclick="scrollToSection(event,'about')"><i class="fa fa-user"></i> Learn About Us</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: CTA -->
+    <section class="section s3" id="about" aria-labelledby="aboutHeading">
+      <h2 id="aboutHeading">Ready to Amplify Your Online Presence?</h2>
+      <p>
+        "Your website isn't an expense — it's an investment that works while you sleep."
+        Book a free consultation or ask for a personalized quote. Let’s create a site that brings you customers.
+      </p>
+      <div class="cta-row">
+        <button class="btn primary" id="whatsMain"><i class="fa fa-whatsapp"></i> Start WhatsApp Chat</button>
+        <a class="btn" href="#contact" onclick="scrollToSection(event,'contact')"><i class="fa fa-calendar-check"></i> Request Free Consultation</a>
+      </div>
+    </section>
+
+    <!-- Contact anchor area (for scrolling) -->
+    <div id="contact" style="height:8px;"></div>
+
+    <!-- Footer -->
+    <footer>
+      <div class="foot-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#custom1">Custom Link1</a></li>
+          <li><a href="#custom2">Custom Link2</a></li>
+          <li><a href="#custom3">Custom Link3</a></li>
+          <li><a href="#custom4">Custom Link4</a></li>
+          <li><a href="#custom5">Custom Link5</a></li>
+        </ul>
+      </div>
+
+      <div class="foot-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#locations">Locations</a></li>
+          <li><a href="#about">About</a></li>
+        </ul>
+      </div>
+
+      <div class="foot-col">
+        <h4>Global</h4>
+        <ul>
+          <li><a href="#privacy">Privacy Policy</a></li>
+          <li><a href="#terms">Terms of Service</a></li>
+        </ul>
+      </div>
+
+      <div class="foot-col">
+        <h4>Upcoming</h4>
+        <ul>
+          <li><a href="#company2">Your Company 2</a></li>
+        </ul>
+      </div>
+
+      <div class="foot-bottom">
+        &copy; 2025 Your Company. All rights reserved.
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    /******************************
+     * Replace YOUR_PHONE_NUMBER with an international phone number (no '+' sign).
+     * Example Pakistan: 923001234567
+     ******************************/
+    const WHATSAPP_NUMBER = 'YOUR_PHONE_NUMBER'; // <-- REPLACE THIS with your number
+
+    // Helper: open WhatsApp chat with prefilled text
+    function openWhatsApp(prefillText){
+      if(!WHATSAPP_NUMBER || WHATSAPP_NUMBER.includes('YOUR')){
+        // If user hasn't set number, show a friendly alert instructing them to update the file.
+        alert('Please replace the YOUR_PHONE_NUMBER placeholder in the page JavaScript with your WhatsApp number to enable direct chat.');
+        return;
+      }
+      const encoded = encodeURIComponent(prefillText);
+      const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`;
+      window.open(url, '_blank');
+    }
+
+    // Attach events to buttons
+    document.getElementById('whatsappTop').addEventListener('click', ()=> openWhatsApp('Hello! I need a website. Please assist.'));
+    document.getElementById('whatsS1').addEventListener('click', ()=> openWhatsApp('Hi, I saw your web design services. I would like more information.'));
+    document.getElementById('whatsS2').addEventListener('click', ()=> openWhatsApp('Hello, I want a free consultation about my company website.'));
+    document.getElementById('whatsMain').addEventListener('click', ()=> openWhatsApp('Hi — I would like to start a project / consultation.'));
+
+    // mobile menu toggling
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const whatsMobile = document.getElementById('whatsMobile');
+    hamburger && hamburger.addEventListener('click', () => {
+      const visible = mobileMenu.style.display === 'block';
+      mobileMenu.style.display = visible ? 'none' : 'block';
+      mobileMenu.setAttribute('aria-hidden', visible ? 'true' : 'false');
+    });
+    whatsMobile && whatsMobile.addEventListener('click', (e)=>{ e.preventDefault(); openWhatsApp('Hello! I would like to chat.'); });
+
+    // Smooth scroll for anchor links
+    function scrollToSection(e, id){
+      if(e) e.preventDefault();
+      const el = document.getElementById(id);
+      if(!el) return;
+      const y = el.getBoundingClientRect().top + window.pageYOffset - 20;
+      window.scrollTo({top: y, behavior: 'smooth'});
+    }
+
+    // Close mobile menu on outside click (small nicety)
+    document.addEventListener('click', (e)=>{
+      if (window.innerWidth > 900) return;
+      if (!mobileMenu) return;
+      if (!mobileMenu.contains(e.target) && !hamburger.contains(e.target)){
+        mobileMenu.style.display = 'none';
+        mobileMenu.setAttribute('aria-hidden','true');
+      }
+    });
+
+    // Add subtle entrance animations
+    window.addEventListener('load', ()=>{
+      document.querySelectorAll('.section, header, footer').forEach((el, i)=>{
+        el.style.opacity = 0;
+        el.style.transform = 'translateY(14px)';
+        setTimeout(()=> {
+          el.style.transition = 'opacity .6s ease, transform .6s cubic-bezier(.2,.9,.3,1)';
+          el.style.opacity = 1;
+          el.style.transform = 'translateY(0)';
+        }, 120 + i*120);
+      });
+    });
+
+    // Accessibility: keyboard nav for nav-links (nice)
+    document.querySelectorAll('.nav-link').forEach(a=>{
+      a.addEventListener('keydown', (ev)=>{
+        if(ev.key === 'Enter'){ a.click(); }
+      });
+    });
+  </script>
+</body>
+</html>
