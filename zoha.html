@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Abaya Store</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {font-family: Arial, sans-serif; margin:0; padding:0; background:#f9f9f9;}
+    header {background:#222; color:#fff; padding:15px; display:flex; align-items:center; justify-content:space-between;}
+    .logo {font-size:20px; font-weight:bold;}
+    nav ul {list-style:none; margin:0; padding:0; display:flex; gap:15px;}
+    nav ul li {display:inline;}
+    nav ul li a {color:#fff; text-decoration:none; font-weight:bold;}
+    .search-bar {margin-left:20px;}
+    .search-bar input {padding:5px;}
+    .cart {color:#fff; margin-left:20px; font-weight:bold;}
+    
+    /* Slider */
+    .slider {width:100%; height:400px; overflow:hidden; position:relative;}
+    .slides {display:flex; width:300%; animation:slide 12s infinite;}
+    .slides img {width:100%; height:400px; object-fit:cover;}
+    @keyframes slide {
+      0% {margin-left:0;}
+      30% {margin-left:0;}
+      35% {margin-left:-100%;}
+      65% {margin-left:-100%;}
+      70% {margin-left:-200%;}
+      100% {margin-left:-200%;}
+    }
+    
+    /* Category Section */
+    .categories {display:flex; justify-content:center; gap:20px; margin:20px 0;}
+    .category {background:#fff; padding:10px 20px; border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,0.2); text-align:center;}
+    .category img {width:50px; height:50px; display:block; margin:0 auto 5px;}
+    
+    /* Product Grid */
+    .products {display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:15px; padding:20px;}
+    .product {background:#fff; padding:10px; border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,0.2);}
+    .product img {width:100%; height:250px; object-fit:cover; border-radius:10px;}
+    
+    /* Order Form */
+    .order-form {padding:20px; background:#fff; margin:20px; border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,0.2);}
+    .order-form input, .order-form textarea {width:100%; padding:8px; margin:5px 0;}
+    .order-form button {padding:10px 20px; background:#222; color:#fff; border:none; border-radius:5px; cursor:pointer;}
+    
+    /* WhatsApp button */
+    .whatsapp {position:fixed; bottom:20px; right:20px;}
+    .whatsapp a {background:#25D366; color:white; padding:12px 18px; border-radius:50px; text-decoration:none; font-weight:bold; box-shadow:0 2px 5px rgba(0,0,0,0.3);}
+    
+    /* Admin Panel */
+    .admin-panel {display:none; padding:20px; background:#fff; margin:20px; border-radius:10px; box-shadow:0 2px 5px rgba(0,0,0,0.2);}
+    footer {background:#222; color:#fff; text-align:center; padding:10px; margin-top:20px;}
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">Abaya Store</div>
+    <nav>
+      <ul>
+        <li><a href="#">Bridal</a></li>
+        <li><a href="#">Pret</a></li>
+        <li><a href="#">Simple</a></li>
+      </ul>
+    </nav>
+    <div class="search-bar">
+      <input type="text" placeholder="Search...">
+    </div>
+    <div class="cart">🛒 Cart</div>
+  </header>
+
+  <!-- Slider -->
+  <div class="slider">
+    <div class="slides">
+      <img src="https://via.placeholder.com/1200x400?text=Slider+1" alt="">
+      <img src="https://via.placeholder.com/1200x400?text=Slider+2" alt="">
+      <img src="https://via.placeholder.com/1200x400?text=Slider+3" alt="">
+    </div>
+  </div>
+
+  <!-- Categories -->
+  <div class="categories">
+    <div class="category"><img src="https://via.placeholder.com/50" alt="">Bridal</div>
+    <div class="category"><img src="https://via.placeholder.com/50" alt="">Pret</div>
+    <div class="category"><img src="https://via.placeholder.com/50" alt="">Simple</div>
+  </div>
+
+  <!-- Products -->
+  <div class="products">
+    <!-- 30 Placeholder Images -->
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+    <div class="product"><img src="https://via.placeholder.com/200x250" alt="Product"></div>
+  </div>
+
+  <!-- Order Form -->
+  <div class="order-form">
+    <h2>Place Your Order</h2>
+    <form onsubmit="submitOrder(event)">
+      <label>Name:</label><br>
+      <input type="text" id="cust-name" required><br>
+      
+      <label>Email:</label><br>
+      <input type="email" id="cust-email" required><br>
+      
+      <label>Phone Number:</label><br>
+      <input type="text" id="cust-phone" required><br>
+      
+      <label>Address:</label><br>
+      <textarea id="cust-address" required></textarea><br>
+      
+      <button type="submit">Submit Order</button>
+    </form>
+  </div>
+
+  <!-- WhatsApp -->
+  <div class="whatsapp">
+    <a href="https://wa.me/923001234567" target="_blank">WhatsApp Us</a>
+  </div>
+
+  <!-- Admin Panel -->
+  <div class="admin-panel" id="adminPanel">
+    <h2>Admin Panel</h2>
+    <p>Only you can see this section. (Orders, Customers, Security logs, etc.)</p>
+  </div>
+
+  <footer>
+    <p>© 2025 Abaya Store. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    function submitOrder(e){
+      e.preventDefault();
+      let name = document.getElementById("cust-name").value;
+      let email = document.getElementById("cust-email").value;
+      let phone = document.getElementById("cust-phone").value;
+      let address = document.getElementById("cust-address").value;
+      alert("Thanks " + name + "! Your order has been received.\nWe will contact you at " + phone + " soon.");
+    }
+
+    // Admin panel security (simple password protection)
+    let password = prompt("Enter Admin Password to access Admin Panel:");
+    if(password === "admin123"){ 
+      document.getElementById("adminPanel").style.display = "block"; 
+    }
+  </script>
+</body>
+</html>
