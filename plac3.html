@@ -1,0 +1,469 @@
+<html>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portfolio</title>
+  <style>
+    /* General Reset and Fonts */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      background-color: #f8f9fa;
+      color: #333;
+      line-height: 1.6;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    /* Resume Section */
+    .resume {
+      padding: 60px 20px;
+      background: #f9f9f9;
+    }
+    .resume-container {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .resume-box {
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      width: 350px;
+    }
+    .resume-box h2 {
+      font-size: 22px;
+      margin-bottom: 20px;
+      color: #222;
+      text-align: center;
+    }
+    .resume-item {
+      background: #fafafa;
+      border: 1px solid #eee;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .resume-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+    .resume-item span {
+      display: block;
+      font-size: 14px;
+      color: green;
+      margin-bottom: 8px;
+    }
+    .resume-item h3 {
+      font-size: 18px;
+      margin: 5px 0;
+      color: #222;
+    }
+    .resume-item p {
+      font-size: 14px;
+      color: #555;
+    }
+
+    /* Skills Section */
+    .skills {
+      max-width: 900px;
+      margin: 40px auto;
+      text-align: center;
+    }
+    .skills h2 {
+      margin-bottom: 40px;
+    }
+    .skill-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 25px;
+      justify-items: center;
+    }
+    .skill-card {
+      background-color: white;
+      border-radius: 12px;
+      padding: 15px 10px;
+      width: 140px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+    .skill-card img {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 8px;
+    }
+    .skill-name {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    .skill-percent {
+      background-color: #3a6b35;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      display: inline-block;
+    }
+
+    /* Projects Section */
+    .projects {
+      max-width: 960px;
+      margin: 60px auto;
+    }
+    .projects h2 {
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .projects p.description {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 0.95rem;
+      color: #555;
+    }
+    .project-filters {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      margin-bottom: 30px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #3a6b35;
+    }
+    .project-filters span:hover {
+      text-decoration: underline;
+    }
+    .project-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+    .project-card {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .project-card:hover {
+      transform: translateY(-6px);
+    }
+    .project-card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+    }
+    .project-info {
+      padding: 15px 12px;
+    }
+    .project-category {
+      font-size: 0.75rem;
+      color: #3a6b35;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .project-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #222;
+    }
+
+    /* Pricing Section */
+    .pricing {
+      max-width: 960px;
+      margin: 60px auto;
+      text-align: center;
+    }
+    .pricing h2 {
+      font-weight: 700;
+      margin-bottom: 30px;
+    }
+    .pricing-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 25px;
+      justify-items: center;
+    }
+    .price-card {
+      background-color: white;
+      border-radius: 15px;
+      padding: 25px 20px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+      text-align: left;
+      width: 280px;
+    }
+    .price-card h3 {
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .price {
+      font-weight: 700;
+      font-size: 2rem;
+      margin-bottom: 12px;
+      color: #3a6b35;
+    }
+    .price-description {
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      color: #666;
+    }
+    .features {
+      list-style: none;
+      margin-bottom: 0;
+      padding-left: 0;
+    }
+    .features li {
+      padding: 8px 0;
+      border-bottom: 1px solid #ddd;
+      color: #555;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+    }
+    .features li.unavailable {
+      color: #ccc;
+      text-decoration: line-through;
+    }
+
+    /* Contact Section */
+    .contact {
+      max-width: 900px;
+      margin: 60px auto 40px auto;
+      background-color: white;
+      padding: 40px 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+      text-align: center;
+    }
+    .contact h2 {
+      font-weight: 700;
+      margin-bottom: 30px;
+    }
+    .contact-container {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      text-align: left;
+    }
+    .contact-info {
+      flex: 1;
+      min-width: 250px;
+      color: #444;
+      font-size: 0.95rem;
+    }
+    .contact-info p {
+      margin-bottom: 25px;
+      line-height: 1.4;
+    }
+    .contact-info span {
+      font-weight: 700;
+      color: #3a6b35;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .contact-form {
+      flex: 1;
+      min-width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      padding: 12px 15px;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      resize: none;
+      transition: border-color 0.3s ease;
+    }
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      border-color: #3a6b35;
+      outline: none;
+    }
+    .send-btn {
+      background-color: #3a6b35;
+      color: white;
+      border: none;
+      padding: 14px 20px;
+      font-size: 1rem;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 0.3s ease;
+    }
+    .send-btn:hover {
+      background-color: #2a4d23;
+    }
+
+    /* Responsive Tweaks */
+    @media (max-width: 768px) {
+      .contact-container {
+        flex-direction: column;
+        text-align: center;
+      }
+      .contact-info,
+      .contact-form {
+        min-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Resume Section -->
+  <section class="resume">
+    <div class="resume-container">
+      <!-- Experience -->
+      <div class="resume-box">
+        <h2>Experience</h2>
+        <div class="resume-item">
+          <span>2013 - 2015</span>
+          <h3>Themeforest Market</h3>
+          <p>Web Freelancer</p>
+        </div>
+        <div class="resume-item">
+          <span>2015 - 2018</span>
+          <h3>Envato Theme Developer</h3>
+          <p>Web Development</p>
+        </div>
+        <div class="resume-item">
+          <span>2018 - 2020</span>
+          <h3>Marketing Expert GRP</h3>
+          <p>Web Developer & Business Partner</p>
+        </div>
+      </div>
+
+      <!-- Education -->
+      <div class="resume-box">
+        <h2>Education</h2>
+        <div class="resume-item">
+          <span>2013 - 2015</span>
+          <h3>Bachelor Degree of Information Technology</h3>
+          <p>State University Bangladesh</p>
+        </div>
+        <div class="resume-item">
+          <span>2015 - 2018</span>
+          <h3>Higher Secondary Education</h3>
+          <p>Premium College United VC</p>
+        </div>
+        <div class="resume-item">
+          <span>2018 - 2020</span>
+          <h3>Webster College</h3>
+          <p>UI/UX Design</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section class="skills">
+    <h2>Let's Explore My Skills</h2>
+    <div class="skill-grid">
+      <div class="skill-card">
+        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968705.png" alt="Figma" />
+        <div class="skill-name">Figma</div>
+        <div class="skill-percent">99%</div>
+      </div>
+      <div class="skill-card">
+        <img src="https://tailwindcss.com/_next/static/media/twitter-square.7e66d4b5.svg" alt="Tailwind" />
+        <div class="skill-name">Tailwind</div>
+        <div class="skill-percent">92%</div>
+      </div>
+      <div class="skill-card">
+        <img src="https://cdn-icons-png.flaticon.com/512/888/888859.png" alt="Photoshop" />
+        <div class="skill-name">Photoshop</div>
+        <div class="skill-percent">58%</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section class="projects">
+    <h2>Work & Projects</h2>
+    <p class="description">Check out some of my design projects meticulously designed with love and dedication; each reflecting the passion and soul that I poured into every detail.</p>
+    <div class="project-filters">
+      <span>Show All</span>
+      <span>Designs</span>
+      <span>Marketing</span>
+      <span>Branding</span>
+      <span>Game</span>
+    </div>
+    <div class="project-list">
+      <div class="project-card">
+        <img src="https://images.unsplash.com/photo-1512499617640-c2f99998e0e5?auto=format&fit=crop&w=800&q=60" alt="Mobile Application Design" />
+        <div class="project-info">
+          <div class="project-category">Branding</div>
+          <div class="project-title">Mobile Application Design</div>
+        </div>
+      </div>
+      <div class="project-card">
+        <img src="https://images.unsplash.com/photo-1587613755479-d9ed9f7b0a31?auto=format&fit=crop&w=800&q=60" alt="Website Makeup Design" />
+        <div class="project-info">
+          <div class="project-category">Design</div>
+          <div class="project-title">Website Makeup Design</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="pricing">
+    <h2>Flexible Pricing Plan</h2>
+    <div class="pricing-cards">
+      <div class="price-card">
+        <h3>Basic</h3>
+        <div class="price">$15 <small>/Hour</small></div>
+        <p class="price-description">Have design ready to build? or small budget</p>
+        <ul class="features">
+          <li>Need your wireframe</li>
+          <li>Design with Figma, Framer</li>
+          <li>Product Design</li>
+          <li class="unavailable">Digital Marketing</li>
+          <li class="unavailable">Custom Support</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="contact">
+    <h2>Get in Touch with Me!</h2>
+    <div class="contact-container">
+      <div class="contact-info">
+        <p><span>📍 Our Office:</span>Tiger Khan, Bangladesh</p>
+        <p><span>📞 Contact Number:</span>+123 3432 313</p>
+        <p><span>📧 Email Us:</span>websitename@gmail.com</p>
+      </div>
+      <form class="contact-form">
+        <input type="text" name="name" placeholder="Name" required />
+        <input type="email" name="email" placeholder="Email" required />
+        <textarea name="message" rows="5" placeholder="Message" required></textarea>
+        <button type="submit" class="send-btn">Send Me Message 📤</button>
+      </form>
+    </div>
+  </section>
+
+</body>
+</html>
