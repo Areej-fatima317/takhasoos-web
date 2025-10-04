@@ -1,0 +1,482 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Awami site — Full Agency Single File</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#071128;
+      --card:#0f1724;
+      --muted:rgba(255,255,255,0.75);
+      --accent1:#5b6cff;
+      --accent2:#37e6b8;
+    }
+
+    /* Basic */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      background:linear-gradient(180deg,var(--bg) 0%, #041022 60%);
+      color:#eaf2ff;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    h1,h2,h3,h4,h5{font-family:'Montserrat',sans-serif;color:#fff;margin-bottom:.6rem}
+    p, .lead { color: var(--muted); }
+
+    a { color: var(--accent1); text-decoration: none; }
+    a:hover { color: var(--accent2); }
+
+    /* Navbar */
+    .navbar{backdrop-filter: blur(8px); background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.05));}
+    .navbar .nav-link{color:#fff !important; font-weight:500}
+    .nav-brand{font-weight:800;letter-spacing:.3px}
+
+    /* Helpers */
+    .container-xl{padding:2rem}
+    .rounded-14{border-radius:14px}
+
+    /* HERO */
+    .hero{
+      min-height:80vh;
+      display:flex;align-items:center;
+      position:relative;overflow:hidden;padding:4rem 0;
+    }
+    .hero .overlay {
+      position:absolute;inset:0; background:linear-gradient(120deg, rgba(91,108,255,0.12), rgba(55,230,184,0.06));
+      pointer-events:none;
+    }
+    .hero-left{max-width:640px;}
+    .headline{font-size:clamp(2rem,4.5vw,3.6rem);line-height:1.02;font-weight:800;}
+    .sub{color:rgba(234,242,255,0.85);margin-top:.6rem;font-size:1.05rem}
+    .hero-cta .btn-primary{background:linear-gradient(90deg,var(--accent1),#7f6bff); border:none; padding:.85rem 1.4rem; border-radius:12px; font-weight:600}
+    .hero-art{border-radius:18px; overflow:hidden; box-shadow:0 20px 50px rgba(2,6,23,0.6); border:1px solid rgba(255,255,255,0.03)}
+
+    /* SECTIONS */
+    section{padding:4rem 0;}
+
+    /* Cards / Services */
+    .card-plain{background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); border-radius:14px; padding:1rem}
+    .service-img{height:190px; object-fit:cover; border-radius:12px 12px 0 0; display:block; width:100%}
+
+    /* Portfolio */
+    .portfolio-item{position:relative; overflow:hidden; border-radius:12px; border:1px solid rgba(255,255,255,0.03)}
+    .portfolio-item img{width:100%; height:220px; object-fit:cover; display:block}
+    .portfolio-overlay{position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0.0), rgba(0,0,0,0.45)); opacity:0; transition:all .35s ease; display:flex;align-items:flex-end;padding:1rem}
+    .portfolio-item:hover .portfolio-overlay{opacity:1; transform:translateY(0)}
+
+    /* Testimonials */
+    .testimonial{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px; padding:1.25rem;}
+    .testimonial .client-img{width:72px;height:72px;border-radius:12px;object-fit:cover;border:1px solid rgba(255,255,255,0.04)}
+
+    /* Contact */
+    .contact-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02)); border-radius:12px; padding:1.25rem; border:1px solid rgba(255,255,255,0.03)}
+    input, textarea{background:rgba(255,255,255,0.02); color:#eaf2ff; border:none; border-radius:8px; padding:.75rem}
+    input::placeholder, textarea::placeholder{color:rgba(234,242,255,0.45)}
+
+    /* Footer */
+    footer{padding:2rem 0; color:rgba(234,242,255,0.65); border-top:1px solid rgba(255,255,255,0.02)}
+
+    /* Animations - simple CSS + reveal via JS */
+    .fade { opacity:0; transform:translateY(20px); transition: all .7s cubic-bezier(.2,.9,.3,1); }
+    .fade.show { opacity:1; transform:none; }
+    .fade-slow { transition-duration:1s; }
+
+    /* Image fade-in */
+    img.loaded{opacity:1; transition:opacity .9s ease-in;}
+    img{opacity:0}
+
+    /* Small screens */
+    @media (max-width:991px){
+      .hero{padding:3rem 0}
+      .hero-art{margin-top:1.5rem}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-xl">
+      <a class="navbar-brand nav-brand" href="#">Awami site</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navMain">
+        <ul class="navbar-nav ms-auto align-items-lg-center">
+          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+          <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
+          <li class="nav-item"><a class="nav-link" href="#banner">Banner</a></li>
+          <li class="nav-item"><a class="nav-link" href="#testimonials">Testimonials</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+          <li class="nav-item ms-3 d-none d-lg-block"><a class="btn btn-primary" href="#contact">Let's Talk</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="container-xl">
+      <div class="row align-items-center">
+        <div class="col-lg-6 hero-left">
+          <div class="fade" data-delay="100">
+            <h1 class="headline">We design digital experiences that grow brands.</h1>
+            <p class="sub">Full-service digital studio — branding, web & app design, product strategy, and growth marketing.</p>
+            <div class="mt-4 hero-cta d-flex gap-2">
+              <a href="#contact" class="btn btn-primary">Start a Project</a>
+              <a href="#portfolio" class="btn btn-outline-light" style="border-radius:12px;padding:.6rem .9rem">View Work</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6 d-none d-lg-block">
+          <div class="hero-art fade" data-delay="300">
+            <!-- dynamic mix of Unsplash / Pexels / Pixabay image -->
+            <img data-src="https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg" alt="hero art" class="img-fluid" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="overlay" aria-hidden="true"></div>
+  </header>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container-xl">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-6 fade" data-delay="120">
+          <img data-src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80" alt="about image" class="img-fluid rounded-14" />
+        </div>
+        <div class="col-lg-6 fade" data-delay="220">
+          <h2>Awami site</h2>
+          <p class="lead">Awami site is a boutique digital agency combining strategy, design and engineering to build products people love. We focus on measurable results and elegant UX.</p>
+          <ul class="list-unstyled" style="color:var(--muted)">
+            <li>• Product design & prototyping</li>
+            <li>• Web & mobile development</li>
+            <li>• Growth marketing & analytics</li>
+          </ul>
+          <div class="mt-3">
+            <a href="#services" class="btn btn-outline-light">See Services</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="container-xl">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Our Services</h2>
+        <p class="small text-muted">We deliver end-to-end solutions</p>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-3 fade" data-delay="140">
+          <div class="card-plain">
+            <img data-src="https://source.unsplash.com/600x400/?ui,ux" alt="UI/UX" class="service-img lazy" />
+            <div class="mt-3">
+              <h5>UI / UX Design</h5>
+              <p class="small">Research-led interfaces and prototyping for delightful experiences.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 fade" data-delay="170">
+          <div class="card-plain">
+            <img data-src="https://cdn.pixabay.com/photo/2017/08/06/00/00/people-2583496_1280.jpg" alt="web dev" class="service-img lazy" />
+            <div class="mt-3">
+              <h5>Web Development</h5>
+              <p class="small">Fast, accessible, and SEO-friendly frontends and backends.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 fade" data-delay="200">
+          <div class="card-plain">
+            <img data-src="https://images.pexels.com/photos/3183197/pexels-photo-3183197.jpeg" alt="branding" class="service-img lazy" />
+            <div class="mt-3">
+              <h5>Branding</h5>
+              <p class="small">Identity systems that tell a consistent story across touchpoints.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 fade" data-delay="230">
+          <div class="card-plain">
+            <img data-src="https://source.unsplash.com/600x400/?marketing,digital" alt="growth" class="service-img lazy" />
+            <div class="mt-3">
+              <h5>Growth Marketing</h5>
+              <p class="small">Performance campaigns, analytics and CRO to increase conversions.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO -->
+  <section id="portfolio">
+    <div class="container-xl">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Portfolio</h2>
+        <p class="small text-muted">Selected projects</p>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-md-6 col-lg-4 fade" data-delay="150">
+          <div class="portfolio-item">
+            <img data-src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80" alt="project" class="lazy" />
+            <div class="portfolio-overlay">
+              <div>
+                <h5>eCommerce Rebrand</h5>
+                <p class="small">Visual overhaul & conversion optimization</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4 fade" data-delay="180">
+          <div class="portfolio-item">
+            <img data-src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg" alt="project" class="lazy" />
+            <div class="portfolio-overlay">
+              <div>
+                <h5>SaaS Dashboard</h5>
+                <p class="small">Improved retention through better UX</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4 fade" data-delay="210">
+          <div class="portfolio-item">
+            <img data-src="https://cdn.pixabay.com/photo/2016/09/09/18/35/startup-1659007_1280.jpg" alt="project" class="lazy" />
+            <div class="portfolio-overlay">
+              <div>
+                <h5>Mobile App</h5>
+                <p class="small">Onboarding-focused redesign</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ADVANCED BANNER -->
+  <section id="banner">
+    <div class="container-xl">
+      <div class="card-plain d-flex align-items-center justify-content-between p-4 fade" data-delay="160" style="gap:1rem;">
+        <div>
+          <h3>Launch faster with a clear product strategy</h3>
+          <p class="small">Discovery sprints to reduce risk and validate your strongest ideas.</p>
+        </div>
+        <div>
+          <a href="#contact" class="btn btn-primary">Book a Sprint</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="testimonials">
+    <div class="container-xl">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Testimonials</h2>
+        <p class="small text-muted">What our clients say</p>
+      </div>
+
+      <div id="testiCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <div class="testimonial d-flex gap-3 align-items-center">
+              <img data-src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80" alt="Sarah" class="client-img lazy" />
+              <div>
+                <strong>Sarah J.</strong>
+                <div class="small text-muted">Head of Product, Nova</div>
+                <p class="mb-0">"Awami site revamped our onboarding. Activation increased by 42% in the first month."</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel-item">
+            <div class="testimonial d-flex gap-3 align-items-center">
+              <img data-src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg" alt="Ali" class="client-img lazy" />
+              <div>
+                <strong>Ali R.</strong>
+                <div class="small text-muted">Founder, Lyra</div>
+                <p class="mb-0">"The new site looks amazing and loads fast. Bounce rate dropped massively."</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel-item">
+            <div class="testimonial d-flex gap-3 align-items-center">
+              <img data-src="https://cdn.pixabay.com/photo/2015/03/04/22/35/portrait-657785_1280.jpg" alt="Meera" class="client-img lazy" />
+              <div>
+                <strong>Meera P.</strong>
+                <div class="small text-muted">CMO, Ember</div>
+                <p class="mb-0">"Great team — on time, clear communication, highly recommended."</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#testiCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#testiCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container-xl">
+      <div class="row g-4">
+        <div class="col-lg-6 fade" data-delay="140">
+          <h2>Get in touch</h2>
+          <p class="lead">Tell us about your project — we’ll reply within one business day.</p>
+
+          <div class="contact-card mt-3">
+            <form id="contactForm" novalidate>
+              <div class="mb-3">
+                <label class="form-label small">Full name</label>
+                <input type="text" id="fullname" class="form-control" required />
+                <div class="invalid-feedback">Please enter your name</div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small">Email</label>
+                <input type="email" id="email" class="form-control" required />
+                <div class="invalid-feedback">Please enter a valid email</div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small">Message</label>
+                <textarea id="message" rows="5" class="form-control" required></textarea>
+                <div class="invalid-feedback">Please write a short message</div>
+              </div>
+
+              <div class="d-flex gap-2 align-items-center">
+                <button class="btn btn-primary" type="submit">Send message</button>
+                <div id="formStatus" class="small text-muted">No spam — we hate it too.</div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-lg-6 fade" data-delay="180">
+          <h5 class="text-muted">Office</h5>
+          <p>Lahore, Pakistan · hello@Awami site.example</p>
+
+          <div class="mt-4 card-plain">
+            <h6>Quick contact</h6>
+            <p class="small text-muted mb-2">Prefer a quick chat? Book a 15-minute intro call and we’ll review your brief together.</p>
+            <a class="btn btn-outline-light" href="#">Book a call</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container-xl d-flex flex-column flex-md-row justify-content-between align-items-center">
+      <div>© <strong>Awami site</strong> — crafted with care.</div>
+      <div class="small mt-2 mt-md-0">Follow us: <a href="#">Dribbble</a> · <a href="#">Twitter</a></div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // --------- Lazy-load images and fade-in when loaded ----------
+    function loadLazyImages() {
+      document.querySelectorAll('img.lazy, img[data-src]').forEach(img => {
+        const src = img.getAttribute('data-src') || img.getAttribute('src');
+        if (!src) return;
+        // set src
+        img.src = src;
+        img.addEventListener('load', () => {
+          img.classList.add('loaded');
+          // mark fade class too
+          if(img.closest('.fade')) img.closest('.fade').classList.add('show');
+        });
+      });
+    }
+
+    // ---------- IntersectionObserver reveal ----------
+    function setupReveal() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(ent => {
+          if (ent.isIntersecting) {
+            ent.target.classList.add('show');
+            // optional: remove observer after show
+            observer.unobserve(ent.target);
+          }
+        });
+      }, { threshold: 0.12 });
+
+      document.querySelectorAll('.fade').forEach(el => observer.observe(el));
+    }
+
+    // ---------- Sequential delay application ----------
+    function applyDelays() {
+      document.querySelectorAll('[data-delay]').forEach(el => {
+        const d = parseInt(el.getAttribute('data-delay'), 10) || 0;
+        el.style.transitionDelay = (d/1000)+'s';
+      });
+    }
+
+    // ---------- Contact form validation & simulated submit ----------
+    (function(){
+      const form = document.getElementById('contactForm');
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        if(!form.checkValidity()){
+          form.classList.add('was-validated');
+          document.getElementById('formStatus').textContent = 'Please fix the errors above.';
+          return;
+        }
+        document.getElementById('formStatus').textContent = 'Sending…';
+        setTimeout(() => {
+          form.reset();
+          form.classList.remove('was-validated');
+          document.getElementById('formStatus').textContent = 'Thanks — we will reply within one business day.';
+          alert('Form submitted — this is a demo submission.');
+        }, 900);
+      }, false);
+    })();
+
+    // ---------- Init ----------
+    document.addEventListener('DOMContentLoaded', () => {
+      applyDelays();
+      loadLazyImages();       // set src attr from data-src
+      setupReveal();         // reveal on scroll
+      // also reveal headline immediately
+      document.querySelectorAll('.hero-left .fade, .hero-art.fade').forEach(el => el.classList.add('show'));
+    });
+
+  </script>
+
+</body>
+</html>
