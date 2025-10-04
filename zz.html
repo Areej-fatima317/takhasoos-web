@@ -1,0 +1,131 @@
+<html>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Advanced JavaScript Console</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: monospace;
+      background: white;
+      color:black;
+    }
+    .console {
+      padding: 15px;
+      height: 90vh;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+    .input-line {
+      display: flex;
+      background:brown;
+      padding: 10px;
+      border-top: 1px orange;
+    }
+    .input-line span {
+      color: #0ff;
+    }
+    .input-line input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: white;
+      font-family: monospace;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="console" id="console">
+    ✅ JavaScript console ready! Type <b>help</b> to see available commands.
+  </div>
+
+  <div class="input-line">
+    <span>&gt; </span>
+    <input type="text" id="userInput" autofocus>
+  </div>
+
+  <script>
+    const consoleBox = document.getElementById("console");
+    const input = document.getElementById("userInput");
+
+    let quizActive = false;
+
+    // Command responses
+    function respond(msg) {
+      msg = msg.trim();
+
+      // If quiz is active
+      if (quizActive) {
+        quizActive = false;
+        return msg.toLowerCase() === "paris" 
+          ? "✅ Correct! Paris is the capital of France." 
+          : "❌ Wrong! The correct answer is Paris.";
+      }
+
+      const lower = msg.toLowerCase();
+
+      switch (lower) {
+        case "hello":
+          return "Hi there! How can I help you?";
+        case "bismillah":
+          return "Bismillah hir rahman nir raheem";
+        case "time":
+          return "Current Time: " + new Date().toLocaleTimeString();
+        case "date":
+          return "Today's Date: " + new Date().toLocaleDateString();
+        case "gold":
+          return "Zakat Nisab: ~87.48 grams of gold (approx)";
+        case "happy" :
+          return "Be happy in your life";
+        case "fast" :
+          return "log sal mean aik dafa roza rakhten han logon par sal mean aik dafa roza farz ha";
+        case "namaz":
+          return "Namaz Times:\n- Fajr: 5:00 AM\n- Dhuhr: 1:15 PM\n- Asr: 4:45 PM\n- Maghrib: 6:30 PM\n- Isha: 8:00 PM";
+        case "quiz":
+          quizActive = true;
+          return "Quiz Time! What is the capital of France?";
+        case "help":
+          return "Available commands:\n- hello\n- bismillah\n- time\n- date\n- gold\n- namaz\n- quiz\n- clear\n- help\n- bye\n- calculator\n- happy\n-fast (type any math like 5+5*2)";
+        case "clear":
+          consoleBox.innerHTML = "✅ Console cleared.";
+          return "";
+        case "bye":
+          return "Goodbye! Have a nice day.";
+        default:
+          // Calculator check
+          try {
+            if (/^[0-9+\-*/(). ]+$/.test(msg)) {
+              return "Result: " + eval(msg);
+            }
+          } catch (e) {
+            return "Error in calculation!";
+          }
+          return "Command not recognized! Type 'help' to see commands.";
+      }
+    }
+
+    // Handle input
+    input.addEventListener("keydown", function(e) {
+      if (e.key === "Enter" && input.value.trim() !== "") {
+        const userText = input.value;
+
+        // Show user input
+        consoleBox.innerHTML += "\n> " + userText;
+
+        // Response
+        const reply = respond(userText);
+        if (reply) consoleBox.innerHTML += "\n" + reply;
+
+        // Clear input
+        input.value = "";
+
+        // Scroll down
+        consoleBox.scrollTop = consoleBox.scrollHeight;
+      }
+    });
+  </script>
+</body>
+</html>
