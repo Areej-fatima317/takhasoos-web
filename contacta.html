@@ -1,0 +1,305 @@
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Abaya Store — Ready (placeholders for phone/address)</title>
+<style>
+  :root{--brand:#0f766e;--accent:#ff7043}
+  *{box-sizing:border-box}
+  body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#f6f7fb;color:#0f172a}
+  header{background:var(--brand);color:#fff;padding:14px;text-align:center;position:sticky;top:0;z-index:10}
+  header h1{margin:0;font-size:20px}
+  .wrap{max-width:1100px;margin:18px auto;padding:0 14px}
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+  .controls input[type="text"],.controls select,.controls input[type="number"]{padding:8px;border:1px solid #d1d5db;border-radius:6px}
+  .controls .rangeWrap{display:flex;align-items:center;gap:8px}
+  .products{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media(max-width:1000px){.products{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:700px){.products{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:420px){.products{grid-template-columns:1fr}}
+  .card{background:#fff;border-radius:10px;padding:0;box-shadow:0 6px 18px rgba(15,23,42,0.06);overflow:hidden;position:relative;display:flex;flex-direction:column}
+  .card img{width:100%;height:260px;object-fit:cover;display:block}
+  .card .body{padding:10px;flex:1;display:flex;flex-direction:column}
+  .title{font-weight:700;margin:0 0 6px}
+  .meta{font-size:13px;color:#475569;margin-bottom:6px}
+  .price{font-weight:700;color:#0b6b58;margin-bottom:6px}
+  .badge{position:absolute;left:10px;top:10px;background:#ef4444;color:#fff;padding:6px 8px;border-radius:6px;font-size:12px}
+  .buttons{display:flex;gap:8px;margin-top:auto}
+  .buttons a,.buttons button{flex:1;padding:8px;border-radius:8px;border:none;cursor:pointer;text-decoration:none;color:#fff;text-align:center;font-weight:700}
+  .btn-cart{background:var(--brand)}
+  .btn-call{background:#0ea5a3}
+  .btn-wh{background:#25D366}
+  .footerBar{position:fixed;right:18px;bottom:18px;background:var(--accent);color:#fff;padding:10px 12px;border-radius:999px;box-shadow:0 10px 30px rgba(15,23,42,0.15);cursor:pointer;z-index:40}
+  /* Cart Modal */
+  .overlay{display:none;position:fixed;inset:0;background:rgba(2,6,23,0.5);align-items:center;justify-content:center;padding:12px;z-index:50}
+  .sheet{width:100%;max-width:720px;background:#fff;border-radius:12px;overflow:hidden}
+  .sheet .head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #eef2f6}
+  .sheet .body{padding:12px 16px;max-height:60vh;overflow:auto}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:8px;border-bottom:1px solid #f1f5f9;text-align:left}
+  .small{font-size:13px;color:#64748b}
+  .formRow{display:flex;gap:8px;margin-top:8px}
+  .formRow input,.formRow textarea{flex:1;padding:8px;border:1px solid #d1d5db;border-radius:8px}
+  .placeBtn{background:#25D366;color:#fff;border:none;padding:10px;border-radius:8px;width:100%;font-weight:700;cursor:pointer;margin-top:8px}
+  .muted{color:#64748b;font-size:13px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Areejs abbaya Store — (fill phone & address placeholders)</h1>
+</header>
+
+<div class="wrap">
+  <div class="controls">
+    <input type="text" id="search" placeholder="Search abaya name..." />
+    <select id="category"><option value="">All Categories</option><option>Classic</option><option>Embroidered</option><option>Kimono</option><option>Open Front</option></select>
+    <input type="number" id="underPrice" placeholder="Under Rs. ..." min="0" />
+    <div class="rangeWrap"><input type="range" id="priceRange" min="0" max="10000" value="10000" /><span id="rangeVal">Max: 10000</span></div>
+    <button id="toggleLang">اردو</button>
+    <div style="margin-left:auto" class="small">Cart: <span id="cartCount">0</span></div>
+  </div>
+
+  <div class="products" id="productsGrid" aria-live="polite"></div>
+</div>
+
+<!-- Cart modal / checkout -->
+<div class="overlay" id="cartOverlay" aria-hidden="true">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+    <div class="head">
+      <h3 id="cartTitle">Your Cart</h3>
+      <div>
+        <button onclick="closeCart()" style="background:#ef4444;color:#fff;padding:8px 10px;border-radius:8px;border:none;cursor:pointer">Close</button>
+      </div>
+    </div>
+    <div class="body">
+      <div id="cartContent"></div>
+
+      <h4>Customer Details</h4>
+      <div class="formRow">
+        <input id="custName" placeholder="Your name" />
+        <input id="custPhone" placeholder="Phone / WhatsApp (e.g., 92300...)" />
+      </div>
+      <div class="formRow">
+        <input id="custSize" placeholder="Size / Length (e.g., 54 inches)" />
+      </div>
+      <div style="margin-top:8px">
+        <textarea id="custAddress" placeholder="Delivery address (write here) " rows="3" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:8px"></textarea>
+      </div>
+      <p class="muted">WhatsApp will open with order details — confirm before sending.</p>
+      <button class="placeBtn" id="placeOrderBtn">📩 Send order on WhatsApp</button>
+      <button style="margin-top:8px;background:#ef4444;color:#fff;border:none;padding:8px;width:100%;border-radius:8px;cursor:pointer" id="clearCartBtn">Clear Cart</button>
+    </div>
+  </div>
+</div>
+
+<button class="footerBar" id="openCartBtn">🛒 View Cart (<span id="cartCountBtn">0</span>)</button>
+
+<script>
+/* ----------------- CONFIG ----------------- */
+/* SHOP_WH_NUMBER is the number that will receive checkout messages.
+   Leave as 'YOUR_NUMBER' or replace with like '92300xxxxxxx' (no +). */
+const SHOP_WH_NUMBER = 'YOUR_NUMBER';
+/* ------------------------------------------ */
+
+/* 20 demo products with phone/address placeholders
+   You can replace phone (string) and address (string) with your real values.
+   image currently uses placeholder images — replace with your image URLs. */
+const PRODUCTS = [
+  {id:1, name:"Classic Black Abaya", category:"Classic", price:2500, length:"54 inches", discount:10, phone:"YOUR_PHONE", address:"Your address here", image:"https://via.placeholder.com/600x800?text=Abaya+1"},
+  {id:2, name:"Embroidered Grey Abaya", category:"Embroidered", price:3200, length:"56 inches", discount:15, phone:"YOUR_PHONE", address:"Your address here", image:"https://via.placeholder.com/600x800?text=Abaya+2"},
+  {id:3, name:"Kimono Olive Abaya", category:"Kimono", price:2800, length:"55 inches", discount:0, phone:"YOUR_PHONE", address:"Your address here", image:"https://via.placeholder.com/600x800?text=Abaya+3"},
+  {id:4, name:"Open Front Beige", category:"Open Front", price:3000, length:"54 inches", discount:5, phone:"YOUR_PHONE", address:"Your address here", image:"https://via.placeholder.com/600x800?text=Abaya+4"},
+  {id:5, name:"Black Nida Abaya", category:"Classic", price:2700, length:"55 inches", discount:0, phone:"YOUR_PHONE", address:"Your address here", image:"https://via.placeholder.com/600x800?text=Abaya+5"},
+  {id:6, name:"Maroon Embroidered", category:"Embroidered", price:4200, length:"56 inches", discount:20, phone:"YOUR_PHONE", address:"Your address here", image:"https://via.placeholder.com/600x800?text=Abaya+6"},
+  {id:7, name:"Everyday Flare Abaya", category:"Classic", price:2200, length:"53 inches", discount:0, phone:"YOUR_PHONE", address:"Your address here", image:"https://via.placeholder.com/600x800?text=Abaya+7"},
+  {id:8, name:"Navy Embroidered Luxe", category:"Embroidered", price:5200, length:"56 inches", discount:10, phone:"YOUR_PHONE", address:"Your address here", image:"https://via.placeholder.com/600x800?text=Abaya+8"},
+  {id:9, name:"Olive Casual Abaya", category:"Classic", price:2600, length:"54 inches", discount:0, phone:"YOUR_PHONE", address:"Your address here", image:"https://via.placeholder.com/600x800?text=Abaya+9"},
+  {id:10, name:"Grey Kimono Coat", category:"Kimono", price:3500, length:"57 inches", discount:5, phone:"YOUR_PHONE", address:"Your address here", image:"https://via.placeholder.com/600x800?text=Abaya+10"},
+  {id:11, name:"Simple Black Abaya", category:"Classic", price:2100, length:"52 inches", discount:0, phone:"YOUR_PHONE", address:"Your address here", image:"https://via.placeholder.com/600x800?text=Abaya+11"},
+  {id:12, name:"Gold Thread Embroidered", category:"Embroidered", price:6000, length:"58 inches", discount:25, phone:"YOUR_PHONE", address:"Your address here", image:"https://via.placeholder.com/600x800?text=Abaya+12"},
+  {id:13, name:"Casual Open Front", category:"Open Front", price:2400, length:"54 inches", discount:0, phone:"YOUR_PHONE", address:"Your address here", image:"https://via.placeholder.com/600x800?text=Abaya+13"},
+  {id:14, name:"Silky Kimono Abaya", category:"Kimono", price:4800, length:"56 inches", discount:10, phone:"YOUR_PHONE", address:"Your address here", image:"https://via.placeholder.com/600x800?text=Abaya+14"},
+  {id:15, name:"Straight Cut Abaya", category:"Classic", price:2900, length:"55 inches", discount:0, phone:"YOUR_PHONE", address:"Your address here", image:"https://via.placeholder.com/600x800?text=Abaya+15"},
+  {id:16, name:"Beige Embroidered", category:"Embroidered", price:3400, length:"55 inches", discount:5, phone:"YOUR_PHONE", address:"Your address here", image:"https://via.placeholder.com/600x800?text=Abaya+16"},
+  {id:17, name:"Lightweight Summer Abaya", category:"Classic", price:2300, length:"53 inches", discount:0, phone:"YOUR_PHONE", address:"Your address here", image:"https://via.placeholder.com/600x800?text=Abaya+17"},
+  {id:18, name:"Velvet Evening Abaya", category:"Embroidered", price:7000, length:"58 inches", discount:30, phone:"YOUR_PHONE", address:"Your address here", image:"https://via.placeholder.com/600x800?text=Abaya+18"},
+  {id:19, name:"Minimal Open Abaya", category:"Open Front", price:2600, length:"54 inches", discount:0, phone:"YOUR_PHONE", address:"Your address here", image:"https://via.placeholder.com/600x800?text=Abaya+19"},
+  {id:20, name:"Classic Navy Abaya", category:"Classic", price:2750, length:"55 inches", discount:0, phone:"YOUR_PHONE", address:"Your address here", image:"https://via.placeholder.com/600x800?text=Abaya+20"}
+];
+
+/* -------------------- cart logic (localStorage) -------------------- */
+let cart = JSON.parse(localStorage.getItem('abaya_cart') || '[]'); // [{id,qty}]
+const productsGrid = document.getElementById('productsGrid');
+const cartCountEl = document.getElementById('cartCount');
+const cartOverlay = document.getElementById('cartOverlay');
+const cartContentEl = document.getElementById('cartContent');
+
+function saveCart(){ localStorage.setItem('abaya_cart', JSON.stringify(cart)); updateCartUI(); }
+function updateCartUI(){
+  const totalItems = cart.reduce((s,it)=>s+it.qty,0);
+  cartCountEl.textContent = totalItems;
+  document.getElementById('openCartBtn').innerHTML = `🛒 View Cart (<span id="cartCountBtn">${totalItems}</span>)`;
+}
+
+/* add product to cart by id */
+function addToCart(id){
+  const existing = cart.find(c => c.id === id);
+  if(existing) existing.qty++;
+  else cart.push({id, qty:1});
+  saveCart();
+  alert('Added to cart');
+}
+
+/* remove item */
+function removeFromCart(id){
+  cart = cart.filter(c => c.id !== id);
+  saveCart();
+  renderCart();
+}
+
+/* change qty */
+function changeQty(id, delta){
+  const it = cart.find(c=>c.id===id);
+  if(!it) return;
+  it.qty += delta;
+  if(it.qty < 1) it.qty = 1;
+  saveCart();
+  renderCart();
+}
+
+/* render products list based on filters */
+function renderProducts(){
+  const search = document.getElementById('search').value.trim().toLowerCase();
+  const category = document.getElementById('category').value;
+  const underPrice = parseInt(document.getElementById('underPrice').value) || Infinity;
+  const priceRange = parseInt(document.getElementById('priceRange').value) || 10000;
+  document.getElementById('rangeVal').textContent = 'Max: Rs. ' + priceRange;
+
+  const filtered = PRODUCTS.filter(p=>{
+    if(search && !p.name.toLowerCase().includes(search)) return false;
+    if(category && p.category !== category) return false;
+    if(p.price > priceRange) return false;
+    if(p.price > underPrice) return false;
+    return true;
+  });
+
+  productsGrid.innerHTML = filtered.map(p => {
+    const priceAfter = p.discount ? Math.round(p.price * (100 - p.discount)/100) : p.price;
+    return `
+      <div class="card" aria-label="${p.name}">
+        ${p.discount ? `<div class="badge">${p.discount}% OFF</div>` : ''}
+        <img src="${p.image}" alt="${p.name}">
+        <div class="body">
+          <div class="title">${p.name}</div>
+          <div class="meta small">${p.category} • ${p.length}</div>
+          <div class="price">Rs. ${priceAfter.toLocaleString()}</div>
+          <div class="meta small">📞 ${p.phone}</div>
+          <div class="meta small">📍 ${p.address}</div>
+          <div class="buttons" style="margin-top:10px">
+            <button class="btn-cart" onclick="addToCart(${p.id})">Add to Cart</button>
+            <a class="btn-call" href="tel:${p.phone}" style="display:inline-block;padding:8px;border-radius:8px;color:#fff;text-decoration:none;background:#0ea5a3">Call</a>
+            <a class="btn-wh" href="https://wa.me/${p.phone}?text=${encodeURIComponent('I want to order '+p.name+' ('+p.length+') for Rs. '+priceAfter)}" target="_blank" style="display:inline-block;padding:8px;border-radius:8px;color:#fff;text-decoration:none;background:#25D366">WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* render cart modal content */
+function renderCart(){
+  if(cart.length === 0){
+    cartContentEl.innerHTML = '<p class="small">Your cart is empty.</p>';
+    return;
+  }
+  let html = `<table><thead><tr><th>Product</th><th>Qty</th><th>Price</th><th></th></tr></thead><tbody>`;
+  let total = 0;
+  cart.forEach(it=>{
+    const p = PRODUCTS.find(x=>x.id===it.id);
+    if(!p) return;
+    const priceAfter = p.discount ? Math.round(p.price * (100 - p.discount)/100) : p.price;
+    const line = priceAfter * it.qty;
+    total += line;
+    html += `<tr>
+      <td>${p.name}<div class="small">${p.length}<br/>${p.address}</div></td>
+      <td>
+        <button onclick="changeQty(${p.id},-1)" style="margin-right:6px">-</button>
+        ${it.qty}
+        <button onclick="changeQty(${p.id},1)" style="margin-left:6px">+</button>
+      </td>
+      <td>Rs. ${line.toLocaleString()}</td>
+      <td><button onclick="removeFromCart(${p.id})" style="background:#ef4444;color:#fff;padding:6px;border-radius:6px;border:none;cursor:pointer">Remove</button></td>
+    </tr>`;
+  });
+  html += `</tbody></table><p class="small">Total: <strong>Rs. ${total.toLocaleString()}</strong></p>`;
+  cartContentEl.innerHTML = html;
+}
+
+/* open / close cart modal */
+function openCart(){
+  cartOverlay.style.display = 'flex';
+  renderCart();
+}
+function closeCart(){
+  cartOverlay.style.display = 'none';
+}
+
+/* clear cart */
+document.getElementById('clearCartBtn').addEventListener('click', ()=>{
+  if(!confirm('Clear cart?')) return;
+  cart = []; saveCart(); renderCart();
+});
+
+/* place order -> open WhatsApp with summary */
+document.getElementById('placeOrderBtn').addEventListener('click', ()=>{
+  if(cart.length === 0){ alert('Cart is empty'); return; }
+  const name = document.getElementById('custName').value.trim();
+  const phone = document.getElementById('custPhone').value.trim();
+  const addr = document.getElementById('custAddress').value.trim();
+  const size = document.getElementById('custSize').value.trim();
+  if(!name || !phone || !addr || !size){ alert('Please fill name, phone, size and address'); return; }
+
+  let text = `Order from website:%0A`;
+  let total = 0;
+  cart.forEach(it=>{
+    const p = PRODUCTS.find(x=>x.id===it.id);
+    if(!p) return;
+    const priceAfter = p.discount ? Math.round(p.price * (100 - p.discount)/100) : p.price;
+    const line = priceAfter * it.qty;
+    total += line;
+    text += `• ${p.name} (${p.length}) x ${it.qty} — Rs. ${line}%0A`;
+  });
+  text += `%0ATotal: Rs. ${total}%0A%0ACustomer: ${name}%0APhone: ${phone}%0ASize: ${size}%0AAddress: ${addr}`;
+
+  if(!SHOP_WH_NUMBER || SHOP_WH_NUMBER === 'YOUR_NUMBER'){
+    // If shop number not set, open user WhatsApp (their own) so they can copy paste; still we open with their phone number if provided.
+    window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
+  } else {
+    window.open(`https://wa.me/${SHOP_WH_NUMBER}?text=${text}`, '_blank');
+  }
+});
+
+/* init UI bindings */
+document.getElementById('openCartBtn').addEventListener('click', openCart);
+document.getElementById('search').addEventListener('input', renderProducts);
+document.getElementById('category').addEventListener('change', renderProducts);
+document.getElementById('underPrice').addEventListener('input', renderProducts);
+document.getElementById('priceRange').addEventListener('input', renderProducts);
+
+/* language toggle (Urdu / English) */
+document.getElementById('toggleLang').addEventListener('click', ()=>{
+  const html = document.documentElement;
+  html.dir = html.dir === 'rtl' ? 'ltr' : 'rtl';
+  document.getElementById('toggleLang').textContent = html.dir === 'rtl' ? 'English' : 'اردو';
+});
+
+/* initial render */
+updateCartUI();
+renderProducts();
+</script>
+
+</body>
+</html>
