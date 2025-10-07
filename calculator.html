@@ -1,0 +1,497 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Strong Calculator — Black & Orange Theme</title>
+<style>
+  :root{
+    --bg:#0b0b0c;
+    --panel:#0f1113;
+    --accent:#ff7a18; /* orange */
+    --accent-2:#ffb66a;
+    --muted:#9aa3ad;
+    --white:#ffffff;
+    --glass: rgba(255,255,255,0.03);
+    --btn-shadow: 0 6px 18px rgba(0,0,0,0.6);
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background: linear-gradient(180deg,#050506 0%, #0b0b0c 100%);
+    color:var(--white);
+  }
+
+  .calc {
+    width: min(440px, 96vw);
+    background: linear-gradient(180deg,var(--panel), #0b0d0f);
+    border-radius:18px;
+    padding:18px;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.7);
+    border: 1px solid rgba(255,255,255,0.03);
+    display:grid;
+    grid-template-rows: auto 1fr;
+    gap:12px;
+  }
+
+  .top {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+
+  .brand {
+    display:flex; gap:12px; align-items:center;
+  }
+  .logo {
+    width:44px;height:44px;border-radius:10px;
+    background: linear-gradient(135deg,var(--accent), var(--accent-2));
+    display:grid;place-items:center;font-weight:700;color:#111;
+    box-shadow: 0 6px 18px rgba(255,122,24,0.15), inset 0 -6px 20px rgba(255,255,255,0.06);
+    font-family:monospace;
+  }
+  h1{font-size:16px;margin:0}
+  .subtitle{font-size:12px;color:var(--muted);}
+
+  .memory {
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  .mem-badge{
+    background:var(--glass);
+    border-radius:8px;padding:6px 8px;font-size:12px;color:var(--muted);
+  }
+
+  /* display */
+  .display {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.015));
+    border-radius:12px;
+    padding:12px;
+    box-shadow: var(--btn-shadow);
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .expr {
+    color:var(--muted);
+    font-size:14px;
+    min-height:18px;
+    word-break:break-all;
+  }
+  .value {
+    font-size:32px;
+    font-weight:700;
+    text-align:right;
+    line-height:1;
+  }
+
+  /* layout */
+  .main {
+    display:grid;
+    grid-template-columns: 1fr 120px;
+    gap:12px;
+  }
+
+  /* keypad */
+  .pad {
+    display:grid;
+    grid-template-columns: repeat(4,1fr);
+    gap:10px;
+  }
+
+  button.key {
+    background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+    border: 1px solid rgba(255,255,255,0.03);
+    color:var(--white);
+    padding:14px;
+    border-radius:10px;
+    font-size:16px;
+    cursor:pointer;
+    transition: transform .08s ease, box-shadow .12s ease;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.6);
+  }
+  button.key:active{ transform: translateY(2px) scale(.997); }
+
+  .key.op {
+    background: linear-gradient(135deg, rgba(255,122,24,0.12), rgba(255,122,24,0.06));
+    color:var(--white);
+    border: 1px solid rgba(255,122,24,0.12);
+  }
+
+  .key.accent {
+    background: linear-gradient(135deg,var(--accent), var(--accent-2));
+    color:#0b0b0b;
+    font-weight:700;
+  }
+
+  .key.wide{ grid-column: span 2; }
+
+  /* right column: history */
+  .right {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:10px;
+    padding:8px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    min-height:260px;
+    max-height:260px;
+    overflow:auto;
+  }
+  .right h3{margin:0;font-size:13px;color:var(--muted)}
+  .history-item{
+    padding:8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.02);
+    display:flex;justify-content:space-between;align-items:center;gap:8px;cursor:pointer;
+  }
+  .history-item:hover{ background: rgba(255,255,255,0.02); }
+
+  /* small */
+  .small{ font-size:12px;color:var(--muted) }
+
+  /* responsive */
+  @media (max-width:600px){
+    .main{ grid-template-columns: 1fr; }
+    .right{ max-height:160px; min-height:120px; }
+  }
+</style>
+</head>
+<body>
+  <div class="calc" role="application" aria-label="Calculator">
+    <div class="top">
+      <div class="brand">
+        <div class="logo">C</div>
+        <div>
+          <h1>Strong Calculator</h1>
+          <div class="subtitle">Black · Orange · White theme</div>
+        </div>
+      </div>
+
+      <div class="memory" aria-hidden="false">
+        <div class="mem-badge">M: <span id="memVal">0</span></div>
+        <div class="small">Use M+, M-, MR, MC</div>
+      </div>
+    </div>
+
+    <div class="display" aria-live="polite">
+      <div class="expr" id="expression" aria-hidden="false"> </div>
+      <div class="value" id="display">0</div>
+    </div>
+
+    <div class="main">
+      <div>
+        <div class="pad" id="pad">
+          <!-- row 1 -->
+          <button class="key op" data-key="mc">MC</button>
+          <button class="key op" data-key="mr">MR</button>
+          <button class="key op" data-key="mplus">M+</button>
+          <button class="key op" data-key="mminus">M-</button>
+
+          <!-- row 2 -->
+          <button class="key" data-key="(">(</button>
+          <button class="key" data-key=")">)</button>
+          <button class="key" data-key="%">%</button>
+          <button class="key op" data-key="sqrt">√</button>
+
+          <!-- row 3 -->
+          <button class="key" data-key="7">7</button>
+          <button class="key" data-key="8">8</button>
+          <button class="key" data-key="9">9</button>
+          <button class="key op" data-key="/">÷</button>
+
+          <!-- row 4 -->
+          <button class="key" data-key="4">4</button>
+          <button class="key" data-key="5">5</button>
+          <button class="key" data-key="6">6</button>
+          <button class="key op" data-key="*">×</button>
+
+          <!-- row 5 -->
+          <button class="key" data-key="1">1</button>
+          <button class="key" data-key="2">2</button>
+          <button class="key" data-key="3">3</button>
+          <button class="key op" data-key="-">−</button>
+
+          <!-- row 6 -->
+          <button class="key" data-key="0">0</button>
+          <button class="key" data-key=".">.</button>
+          <button class="key" data-key="^">xʸ</button>
+          <button class="key op" data-key="+">+</button>
+
+          <!-- row 7 -->
+          <button class="key wide" data-key="back">⌫</button>
+          <button class="key wide" data-key="ac">AC</button>
+
+          <!-- row 8 bottom -->
+          <button class="key op" style="grid-column: span 2" data-key="sq">x²</button>
+          <button class="key op" data-key="percent">%</button>
+          <button class="key accent" data-key="=">=</button>
+        </div>
+      </div>
+
+      <div class="right" aria-live="polite">
+        <h3>History</h3>
+        <div id="historyList" class="historyList small">
+          <!-- items go here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/*
+ Strong Calculator JS
+ - Keeps expression as a string
+ - Processes keys and builds safe-expressions
+ - Evaluates using a controlled parser (no arbitrary code)
+*/
+
+const displayEl = document.getElementById('display');
+const exprEl = document.getElementById('expression');
+const historyList = document.getElementById('historyList');
+const memValEl = document.getElementById('memVal');
+
+let expression = '';   // visible expression string
+let memory = 0;        // memory register
+let history = [];      // stored calculations (max 50)
+
+// helpers
+const isOperator = ch => ['+','-','*','/','%','^'].includes(ch);
+const sanitizeForEval = s => {
+  // allow digits, operators, parentheses, dot
+  // also allow functions we will map: sqrt, sq
+  // block any letters other than our allowed words
+  return s.replace(/[^0-9+\-*/().%^,sqrtxsq]/g, '');
+};
+
+// map display operator symbols to real ones
+const mapDisplayToExpr = str => {
+  return str
+    .replace(/×/g, '*')
+    .replace(/÷/g, '/')
+    .replace(/−/g, '-')
+    .replace(/xʸ/g, '^');
+};
+
+// convert '^' to Math.pow(x,y), '%' handled separately
+function evaluateExpression(raw){
+  // raw is a string expression using * / + - ^ ( ) . and functions sqrt(), sq (square)
+  // handle percentage: convert 'number%' to '(number/100)'
+  try {
+    let s = raw;
+
+    // replace common symbols
+    s = mapDisplayToExpr(s);
+
+    // handle square function 'sq(...)' -> ( ... )**2  OR x² format handled earlier
+    // Replace occurrences of x² applied after a number / parenthesis
+    s = s.replace(/(\d+(\.\d+)?|\([^()]*\))\s*²/g, '($1)**2');
+
+    // handle explicit sq button => user appends 'sq' suffix; we treat when evaluating by replacing 'sq' token
+    s = s.replace(/sq\(/g, '((').replace(/\)\)/g, ')**2)'); // not likely used, but kept defensive
+
+    // replace '^' with ** for exponent
+    s = s.replace(/\^/g, '**');
+
+    // replace % (e.g. "50%") => "(50/100)"
+    s = s.replace(/(\d+(\.\d+)?)%/g, '($1/100)');
+
+    // support sqrt symbol (we will use sqrt(...) or '√' mapping)
+    s = s.replace(/√\s*\(/g, 'Math.sqrt(');
+    s = s.replace(/sqrt\s*\(/g, 'Math.sqrt(');
+
+    // final sanitization: allow only numbers, operators, parentheses, Math.sqrt, ., and **
+    // block any letters other than 'Math' to be safe
+    if (/[^0-9+\-*/().%*\sMathsqrt\*\*]/.test(s)) {
+      // do not attempt to eval unsafe strings
+      throw new Error('Invalid characters');
+    }
+
+    // Evaluate using Function safely (limited to math expressions)
+    // eslint-disable-next-line no-new-func
+    const fn = new Function('return ' + s);
+    let result = fn();
+
+    if (typeof result === 'number' && !Number.isFinite(result)) throw new Error('Math error');
+    return result;
+  } catch (e) {
+    return NaN;
+  }
+}
+
+// UI update
+function refreshDisplay(){
+  exprEl.textContent = expression || '';
+  if (expression === '') displayEl.textContent = '0';
+  else {
+    // show a short evaluated preview on the display (live-calc)
+    const raw = mapDisplayToExpr(expression);
+    const val = evaluateExpression(raw);
+    displayEl.textContent = Number.isNaN(val) ? expression : String(val);
+  }
+  memValEl.textContent = memory;
+}
+
+// history
+function pushHistory(expr, result){
+  const item = { expr, result, time: Date.now() };
+  history.unshift(item);
+  if (history.length > 50) history.pop();
+  renderHistory();
+}
+function renderHistory(){
+  historyList.innerHTML = '';
+  history.forEach(h=>{
+    const node = document.createElement('div');
+    node.className = 'history-item';
+    node.tabIndex = 0;
+    node.innerHTML = `<div>${h.expr}</div><div style="opacity:.9">${h.result}</div>`;
+    node.title = 'Click to reuse';
+    node.addEventListener('click', ()=> {
+      expression = h.expr;
+      refreshDisplay();
+    });
+    historyList.appendChild(node);
+  });
+}
+
+// key handling
+function handleKey(key){
+  // control keys mapping
+  if (key === 'ac'){
+    expression = '';
+    refreshDisplay();
+    return;
+  }
+  if (key === 'back'){
+    expression = expression.slice(0, -1);
+    refreshDisplay();
+    return;
+  }
+  if (key === 'mr'){
+    // recall memory
+    expression += String(memory);
+    refreshDisplay();
+    return;
+  }
+  if (key === 'mc'){
+    memory = 0; memValEl.textContent = memory; return;
+  }
+  if (key === 'mplus'){
+    // add current value to memory
+    const val = evaluateExpression(mapDisplayToExpr(expression));
+    if (!Number.isNaN(val)) {
+      memory = Number((memory + val).toPrecision(12));
+      memValEl.textContent = memory;
+    }
+    return;
+  }
+  if (key === 'mminus'){
+    const val = evaluateExpression(mapDisplayToExpr(expression));
+    if (!Number.isNaN(val)) {
+      memory = Number((memory - val).toPrecision(12));
+      memValEl.textContent = memory;
+    }
+    return;
+  }
+
+  if (key === '='){
+    // evaluate final
+    const raw = mapDisplayToExpr(expression);
+    const val = evaluateExpression(raw);
+    if (Number.isNaN(val)){
+      displayEl.textContent = 'Error';
+      return;
+    }
+    // format result
+    let out = val;
+    if (Math.abs(out) < 1e-12) out = 0;
+    if (!Number.isInteger(out)) out = Number(out.toPrecision(12));
+    pushHistory(expression, out);
+    expression = String(out);
+    refreshDisplay();
+    return;
+  }
+
+  // digit or operator inputs: append with rules
+  // make sure we only allow safe characters
+  const allowed = '0123456789.+-*/()%^()';
+  // special tokens mapping (we used display tokens like '÷', '×', 'xʸ', '√', 'x²')
+  if (key === 'sqrt') {
+    expression += '√(';
+    refreshDisplay(); return;
+  }
+  if (key === 'sq') {
+    // apply square after last number or parenthesis
+    // simply append '²' marker to be processed later
+    expression += '²';
+    refreshDisplay(); return;
+  }
+  if (key === '^') {
+    expression += '^';
+    refreshDisplay(); return;
+  }
+  if (key === 'percent') {
+    // append percent sign to last number
+    expression += '%';
+    refreshDisplay(); return;
+  }
+
+  // if key is single char and allowed
+  if (typeof key === 'string' && key.length === 1) {
+    if (allowed.includes(key) || key === '.') {
+      // basic sanitization rules: prevent two operators in a row (except minus for negative)
+      const last = expression.slice(-1);
+      if (isOperator(key)) {
+        if (expression === '' && key !== '-') return; // don't start with operator except '-'
+        if (isOperator(last)) {
+          // replace last operator except if last is ')' (then allow)
+          expression = expression.slice(0, -1) + key;
+          refreshDisplay(); return;
+        }
+      }
+      expression += key;
+      refreshDisplay();
+    }
+  }
+}
+
+// wire up buttons
+document.querySelectorAll('button.key').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const k = btn.dataset.key;
+    handleKey(k);
+  });
+});
+
+// keyboard support
+window.addEventListener('keydown', (e) => {
+  const k = e.key;
+  if ((/^[0-9]$/).test(k)) { handleKey(k); e.preventDefault(); return; }
+  if (k === '.' ) { handleKey('.'); e.preventDefault(); return; }
+  if (k === '+' || k === '-' || k === '*' || k === '/') { handleKey(k); e.preventDefault(); return; }
+  if (k === 'Enter') { handleKey('='); e.preventDefault(); return; }
+  if (k === '=' ) { handleKey('='); e.preventDefault(); return; }
+  if (k === 'Backspace') { handleKey('back'); e.preventDefault(); return; }
+  if (k === 'Escape') { handleKey('ac'); e.preventDefault(); return; }
+  if (k === '^') { handleKey('^'); e.preventDefault(); return; }
+  if (k === '%') { handleKey('percent'); e.preventDefault(); return; }
+  if (k === '(' || k === ')') { handleKey(k); e.preventDefault(); return; }
+  // letters for shortcuts
+  if (k.toLowerCase() === 'r') { handleKey('ac'); }
+});
+
+// support clicking history items handled in renderHistory()
+
+// initial render
+refreshDisplay();
+renderHistory();
+</script>
+</body>
+</html>
