@@ -1,0 +1,258 @@
+
+<!doctype html>
+<html lang="ur">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Snake Game — Modified</title>
+  <style>
+    html,body{height:100%;margin:0;display:flex;align-items:center;justify-content:center;background:green;font-family:system-ui,-apple-system,Segoe UI,Roboto,'Noto Nastaliq Urdu',sans-serif;color:#fff}
+    .wrap{display:flex;flex-direction:column;gap:12px;align-items:center}
+    canvas{background:#9acd32;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,0.45)}
+    .controls{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:4px}
+    button{padding:8px 14px;font-size:15px;border:none;border-radius:8px;cursor:pointer;background:#1f2937;color:#fff}
+    .info{font-size:14px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <canvas id="game" width="600" height="400"></canvas>
+    <div class="controls">
+      <button id="restartBtn">Reset Game</button>
+      <div class="info">Score: <span id="score">0</span></div>
+    </div>
+    <div class="info" style="opacity:0.9">Snake: <strong>Black</strong> • Apple: <strong style="color:#ff4d4d">Red</strong> • Barrier: <strong style="color:#0ea5e9">Blue</strong></div>
+  </div>
+
+<script>
+/*
+  Modified Snake Game
+  - Background green
+  - Snake color: black
+  - Apple color: red (eating increases length)
+  - Barrier (blue): touch = game over (level out)
+  - Reset button
+  - Barrier placed randomly on start/reset and guaranteed NOT to overlap snake or food
+*/
+
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const scoreEl = document.getElementById('score');
+const restartBtn = document.getElementById('restartBtn');
+
+const BOX = 20;               // cell size in px
+const COLS = canvas.width / BOX; // should be integer (600/20=30)
+const ROWS = canvas.height / BOX; // (400/20=20)
+
+let snake;
+let dir;
+let food;
+let barrier;
+let score;
+let gameInterval;
+let speed = 100; // ms per tick
+
+// helper: random cell (x in 0..COLS-1, y in 0..ROWS-1)
+function randCell(){
+  return {
+    x: Math.floor(Math.random() * COLS) * BOX,
+    y: Math.floor(Math.random() * ROWS) * BOX
+  };
+}
+
+// check overlap of a cell with an array of cells
+function cellInArray(cell, arr){
+  for(let i=0;i<arr.length;i++){
+    if(cell.x === arr[i].x && cell.y === arr[i].y) return true;
+  }
+  return false;
+}
+
+// place food ensuring not on snake or barrier
+function placeFood(){
+  let f;
+  do {
+    f = randCell();
+  } while ( cellInArray(f, snake) || (barrier && f.x===barrier.x && f.y===barrier.y) );
+  food = f;
+}
+
+// place barrier ensuring not on snake or food
+function placeBarrier(){
+  let b;
+  do {
+    b = randCell();
+  } while ( cellInArray(b, snake) );
+  // ensure not immediately same as food (if food placed already)
+  if(food && b.x === food.x && b.y === food.y){
+    // find another
+    do { b = randCell(); } while ( cellInArray(b, snake) || (food && b.x===food.x && b.y===food.y) );
+  }
+  barrier = b;
+}
+
+// initialize / reset game
+function reset(){
+  // starting snake (length 3)
+  snake = [
+    {x: 9*BOX, y: 10*BOX},
+    {x: 8*BOX, y: 10*BOX},
+    {x: 7*BOX, y: 10*BOX}
+  ];
+  dir = 'RIGHT';
+  score = 0;
+  scoreEl.textContent = score;
+
+  // place food first
+  placeFood();
+
+  // then place barrier randomly (guarantee not on snake or food)
+  placeBarrier();
+
+  // clear existing interval
+  if(gameInterval) clearInterval(gameInterval);
+  gameInterval = setInterval(tick, speed);
+}
+
+// draw everything
+function draw(){
+  // clear background (green)
+  ctx.fillStyle = '#9acd32';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  // draw food (apple) - red circle
+  ctx.fillStyle = '#ff4d4d';
+  const fx = food.x + BOX/2;
+  const fy = food.y + BOX/2;
+  ctx.beginPath();
+  ctx.arc(fx, fy, BOX/2.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  // draw barrier - blue square (1 cell)
+  ctx.fillStyle = '#0ea5e9';
+  ctx.fillRect(barrier.x, barrier.y, BOX, BOX);
+
+  // draw snake - head and body black
+  for(let i=0;i<snake.length;i++){
+    ctx.fillStyle = 'black';
+    ctx.fillRect(snake[i].x, snake[i].y, BOX, BOX);
+
+    // subtle white eye on head to show direction
+    if(i===0){
+      ctx.fillStyle = 'white';
+      const eyeSize = Math.max(2, BOX/6);
+      let ex = snake[i].x + BOX/2 - eyeSize/2;
+      let ey = snake[i].y + BOX/2 - eyeSize/2;
+      // offset eye a bit in direction of movement
+      if(dir === 'LEFT') ex -= BOX*0.18;
+      if(dir === 'RIGHT') ex += BOX*0.18;
+      if(dir === 'UP') ey -= BOX*0.18;
+      if(dir === 'DOWN') ey += BOX*0.18;
+      ctx.fillRect(ex, ey, eyeSize, eyeSize);
+    }
+  }
+
+  // draw score text
+  ctx.fillStyle = 'white';
+  ctx.font = '16px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('Score: ' + score, 8, canvas.height - 8);
+}
+
+// collision with self
+function hitSelf(head){
+  for(let i=1;i<snake.length;i++){
+    if(head.x === snake[i].x && head.y === snake[i].y) return true;
+  }
+  return false;
+}
+
+// game tick
+function tick(){
+  // current head
+  const head = { x: snake[0].x, y: snake[0].y };
+
+  if(dir === 'LEFT') head.x -= BOX;
+  if(dir === 'RIGHT') head.x += BOX;
+  if(dir === 'UP') head.y -= BOX;
+  if(dir === 'DOWN') head.y += BOX;
+
+  // wall collision => game over (level out)
+  if(head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height){
+    return gameOver();
+  }
+
+  // barrier collision => game over
+  if(head.x === barrier.x && head.y === barrier.y){
+    return gameOver();
+  }
+
+  // self collision
+  if(hitSelf(head)) return gameOver();
+
+  // eat food?
+  let ate = false;
+  if(head.x === food.x && head.y === food.y){
+    ate = true;
+    score += 10;
+    scoreEl.textContent = score;
+
+    // place new food (and ensure it's not on snake or barrier)
+    placeFood();
+    // optional: after eating, move barrier to new random spot occasionally
+    // (not requested, so keeping barrier until reset)
+  }
+
+  // add new head
+  snake.unshift(head);
+
+  // if didn't eat, remove tail (so length stays same)
+  if(!ate){
+    snake.pop();
+  } else {
+    // when ate, snake stays longer (we already unshifted and didn't pop)
+    // nothing else needed
+  }
+
+  // redraw
+  draw();
+}
+
+// game over handler
+function gameOver(){
+  clearInterval(gameInterval);
+  // overlay message
+  ctx.fillStyle = 'rgba(0,0,0,0.55)';
+  ctx.fillRect(0, canvas.height/2 - 40, canvas.width, 80);
+  ctx.fillStyle = '#fff';
+  ctx.font = '26px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Game Over — Level Out', canvas.width/2, canvas.height/2 + 8);
+
+  // small instruction to reset
+  ctx.font = '14px sans-serif';
+  ctx.fillText('Press Reset to play again', canvas.width/2, canvas.height/2 + 30);
+}
+
+// keyboard controls (arrow keys + WASD)
+window.addEventListener('keydown', function(e){
+  const key = e.key;
+  if((key === 'ArrowLeft' || key === 'a' || key === 'A') && dir !== 'RIGHT') dir = 'LEFT';
+  if((key === 'ArrowRight' || key === 'd' || key === 'D') && dir !== 'LEFT') dir = 'RIGHT';
+  if((key === 'ArrowUp' || key === 'w' || key === 'W') && dir !== 'DOWN') dir = 'UP';
+  if((key === 'ArrowDown' || key === 's' || key === 'S') && dir !== 'UP') dir = 'DOWN';
+});
+
+// Reset button
+restartBtn.addEventListener('click', ()=>{
+  reset();
+  draw();
+});
+
+// start first time
+reset();
+draw();
+
+</script>
+</body>
+</html>
