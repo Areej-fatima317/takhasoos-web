@@ -1,0 +1,445 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Puzzle Ball — Keyboard Controlled</title>
+<style>
+  :root{
+    --bg:#0a0f1a; --panel:#0f1720; --accent:#ff8a00; --good:#22c55e; --bad:#ef4444; --muted:#9aa5b1;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,sans-serif;background:linear-gradient(180deg,#041028 0%, #071126 100%);color:#e6eef8;display:flex;align-items:center;justify-content:center}
+  .wrap{width:min(920px,96vw);display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start}
+  .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:12px;padding:14px;box-shadow:0 10px 30px rgba(2,6,23,0.6)}
+  canvas{display:block;width:100%;height:auto;border-radius:10px;background:linear-gradient(180deg,#062033,#041722);box-shadow:inset 0 1px 0 rgba(255,255,255,0.02)}
+  h1{margin:0 0 6px 0;font-size:18px}
+  .controls{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  button{background:var(--accent);border:none;color:#0b0b0b;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700}
+  button.secondary{background:#1f2937;color:#fff}
+  .info{font-size:13px;color:var(--muted);margin-top:10px}
+  .legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .legend span{display:inline-flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.02)}
+  .dot{width:14px;height:14px;border-radius:50%;display:inline-block}
+  .goaldot{background:var(--good)}
+  .trapdot{background:var(--bad)}
+  .walldot{width:18px;height:10px;background:linear-gradient(90deg,#f3f4f6, #d1d5db);border-radius:4px}
+  .right-panel{display:flex;flex-direction:column;gap:10px}
+  .stage-list{display:flex;flex-direction:column;gap:6px}
+  .stage-item{padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);cursor:pointer}
+  .overlay{position:absolute;left:0;top:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+  .msg{background:rgba(2,6,23,0.85);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);text-align:center}
+  .small{font-size:13px;color:var(--muted)}
+  @media(max-width:880px){.wrap{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Puzzle Ball — Level <span id="levelNum">1</span></h1>
+      <canvas id="game" width="780" height="520"></canvas>
+
+      <div class="controls">
+        <button id="restart">Restart</button>
+        <button id="next" class="secondary">Next Level</button>
+        <button id="resetAll" class="secondary">Reset All</button>
+        <div style="margin-left:auto" class="small">Controls: Arrow keys / WASD • Mobile: swipe</div>
+      </div>
+
+      <div class="legend">
+        <span><span class="dot" style="background:#ffffff"></span> Ball</span>
+        <span><span class="dot goaldot"></span> Goal</span>
+        <span><span class="dot trapdot"></span> Trap</span>
+        <span><span class="walldot"></span> Wall/Obstacle</span>
+      </div>
+
+      <div class="info" id="infoText">Reach the green goal without touching traps or leaving the play area.</div>
+      <div id="overlaySpot"></div>
+    </div>
+
+    <div class="card right-panel">
+      <div>
+        <strong>Levels</strong>
+        <div class="stage-list" id="levelsList"></div>
+      </div>
+      <div>
+        <strong>Tips</strong>
+        <p class="small">Use gentle taps / short key presses to navigate narrow passages. Moving obstacles are predictable — observe their pattern then move.</p>
+      </div>
+      <div>
+        <strong>Status</strong>
+        <div id="statusBox" class="small">Ready</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+// Puzzle Ball — JS Game
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const restartBtn = document.getElementById('restart');
+const nextBtn = document.getElementById('next');
+const resetAllBtn = document.getElementById('resetAll');
+const levelNum = document.getElementById('levelNum');
+const levelsList = document.getElementById('levelsList');
+const infoText = document.getElementById('infoText');
+const statusBox = document.getElementById('statusBox');
+const overlaySpot = document.getElementById('overlaySpot');
+
+const W = canvas.width, H = canvas.height;
+
+let currentLevel = 0;
+let levels = [];
+
+// simple circle-rect collision helper
+function circleRectCollide(cx, cy, r, rx, ry, rw, rh){
+  // find closest point
+  const closestX = Math.max(rx, Math.min(cx, rx + rw));
+  const closestY = Math.max(ry, Math.min(cy, ry + rh));
+  const dx = cx - closestX;
+  const dy = cy - closestY;
+  return (dx*dx + dy*dy) <= r*r;
+}
+
+// level structure:
+// { start: {x,y}, goal: {x,y,r}, walls: [{x,y,w,h}], traps: [{x,y,w,h}], moving: [{x,y,w,h,dx,dy,range}] }
+function buildLevels(){
+  levels = [
+    // Level 1: simple path
+    {
+      name: 'Easy Corridor',
+      start:{x:80,y:260},
+      goal:{x:700,y:260,r:18},
+      walls:[
+        {x:150,y:200,w:20,h:200}, // vertical block leaving a passage
+        {x:300,y:0,w:20,h:360},
+        {x:450,y:160,w:20,h:360}
+      ],
+      traps: [
+        {x:520,y:100,w:60,h:60}
+      ],
+      moving: [] // no moving obstacles
+    },
+    // Level 2: narrow maze + moving bar
+    {
+      name: 'Narrow Maze',
+      start:{x:60,y:460},
+      goal:{x:720,y:40,r:18},
+      walls:[
+        {x:80,y:100,w:600,h:20},
+        {x:80,y:100,w:20,h:380},
+        {x:680,y:100,w:20,h:380},
+        {x:200,y:200,w:360,h:20},
+        {x:200,y:320,w:360,h:20}
+      ],
+      traps:[
+        {x:300,y:120,w:40,h:40},
+        {x:420,y:380,w:40,h:40}
+      ],
+      moving:[
+        {x: 260, y: 240, w: 200, h: 12, dx: 0, dy: 2, range: 120} // vertical moving bar
+      ]
+    },
+    // Level 3: tricky with multiple traps and narrow exit
+    {
+      name: 'Tricky Exit',
+      start:{x:100,y:100},
+      goal:{x:720,y:460,r:18},
+      walls:[
+        {x:0,y:200,w:520,h:16},
+        {x:260,y:200,w:16,h:200},
+        {x:520,y:0,w:16,h:220},
+        {x:520,y:220,w:260,h:16}
+      ],
+      traps:[
+        {x:180,y:120,w:40,h:40},
+        {x:360,y:260,w:40,h:40},
+        {x:600,y:340,w:60,h:40}
+      ],
+      moving:[
+        {x: 360, y: 60, w: 120, h: 12, dx: 2, dy: 0, range: 160} // horizontal bar
+      ]
+    }
+  ];
+}
+
+// game state
+let ball = {x:50,y:50,r:12,vx:0,vy:0};
+let keys = {};
+let running = false;
+let finished = false;
+let fail = false;
+let tickTime = 16;
+let lastTime = 0;
+
+// populate level list UI
+function renderLevelList(){
+  levelsList.innerHTML = '';
+  levels.forEach((lv,i)=>{
+    const el = document.createElement('div');
+    el.className = 'stage-item';
+    el.textContent = (i+1)+'. '+lv.name;
+    el.addEventListener('click', ()=>{ loadLevel(i); });
+    levelsList.appendChild(el);
+  });
+}
+
+// load a level
+function loadLevel(i){
+  currentLevel = i;
+  const lv = levels[currentLevel];
+  ball.x = lv.start.x; ball.y = lv.start.y;
+  ball.vx = ball.vy = 0;
+  levelNum.textContent = (currentLevel+1);
+  running = true; finished = false; fail = false;
+  // initialize moving obstacles base position
+  lv.moving.forEach(m=>{
+    m._baseX = m.x; m._baseY = m.y; m._offset = 0; m._dir = 1;
+  });
+  statusBox.textContent = 'Playing: ' + lv.name;
+  clearOverlay();
+}
+
+// restart current
+function restartLevel(){
+  loadLevel(currentLevel);
+}
+
+// reset all to first level
+function resetAll(){
+  loadLevel(0);
+}
+
+// draw frame
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  // background grid subtle
+  ctx.fillStyle = 'rgba(255,255,255,0.02)';
+  for(let gx=0; gx<W; gx+=40){
+    ctx.fillRect(gx,0,1,H);
+  }
+  for(let gy=0; gy<H; gy+=40){
+    ctx.fillRect(0,gy,W,1);
+  }
+
+  const lv = levels[currentLevel];
+
+  // draw walls
+  ctx.fillStyle = '#cbd5e1';
+  lv.walls.forEach(w=>{
+    ctx.fillStyle = '#1f2937';
+    ctx.fillRect(w.x, w.y, w.w, w.h);
+  });
+
+  // draw traps
+  lv.traps.forEach(t=>{
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(t.x, t.y, t.w, t.h);
+  });
+
+  // draw moving obstacles
+  lv.moving.forEach(m=>{
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(m.x, m.y, m.w, m.h);
+  });
+
+  // draw goal
+  ctx.beginPath();
+  ctx.fillStyle = '#16a34a';
+  ctx.arc(lv.goal.x, lv.goal.y, lv.goal.r, 0, Math.PI*2);
+  ctx.fill();
+  ctx.closePath();
+
+  // draw ball shadow + ball
+  ctx.beginPath();
+  ctx.fillStyle = 'rgba(0,0,0,0.25)';
+  ctx.ellipse(ball.x, ball.y + 10, ball.r*1.2, ball.r*0.6, 0, 0, Math.PI*2);
+  ctx.fill(); ctx.closePath();
+
+  ctx.beginPath();
+  ctx.fillStyle = '#ffffff';
+  ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2); ctx.fill(); ctx.closePath();
+
+  // if finished overlay
+  if(finished){
+    showOverlay('Level Complete!', 'Nice — you reached the goal.', false);
+  } else if(fail){
+    showOverlay('Level Failed', 'You hit a trap or wall. Try again.', true);
+  }
+}
+
+// update physics & game logic
+function update(dt){
+  if(!running) return;
+  if(finished || fail) return;
+  const lv = levels[currentLevel];
+
+  // controls - apply small acceleration
+  const acc = 220; // pixels per second^2
+  if(keys.left) ball.vx -= acc * dt;
+  if(keys.right) ball.vx += acc * dt;
+  if(keys.up) ball.vy -= acc * dt;
+  if(keys.down) ball.vy += acc * dt;
+
+  // friction
+  ball.vx *= Math.pow(0.9, dt*60);
+  ball.vy *= Math.pow(0.9, dt*60);
+
+  // cap speed
+  const maxSp = 420;
+  const sp = Math.hypot(ball.vx, ball.vy);
+  if(sp > maxSp){
+    const k = maxSp / sp;
+    ball.vx *= k; ball.vy *= k;
+  }
+
+  // integrate
+  ball.x += ball.vx * dt;
+  ball.y += ball.vy * dt;
+
+  // keep inside canvas bounds (bounce a little)
+  if(ball.x - ball.r < 0){ ball.x = ball.r; ball.vx = -ball.vx*0.3; }
+  if(ball.x + ball.r > W){ ball.x = W - ball.r; ball.vx = -ball.vx*0.3; }
+  if(ball.y - ball.r < 0){ ball.y = ball.r; ball.vy = -ball.vy*0.3; }
+  if(ball.y + ball.r > H){ ball.y = H - ball.r; ball.vy = -ball.vy*0.3; }
+
+  // update moving obstacles patterns
+  lv.moving.forEach(m=>{
+    // move and oscillate within range around base
+    if(m.dx !== 0){
+      m._offset += m._dir * Math.abs(m.dx) * dt * 60;
+      if(Math.abs(m._offset) >= m.range) { m._dir *= -1; }
+      m.x = m._baseX + m._offset;
+    }
+    if(m.dy !== 0){
+      m._offset += m._dir * Math.abs(m.dy) * dt * 60;
+      if(Math.abs(m._offset) >= m.range) { m._dir *= -1; }
+      m.y = m._baseY + m._offset;
+    }
+  });
+
+  // check collision with walls (treat walls as blocking: if overlap, push ball back and slow)
+  for(const w of lv.walls){
+    if(circleRectCollide(ball.x, ball.y, ball.r, w.x, w.y, w.w, w.h)){
+      // simple response: move ball back along velocity direction until no overlap
+      // step back small steps
+      for(let s=0;s<8;s++){
+        ball.x -= ball.vx * dt * 0.125;
+        ball.y -= ball.vy * dt * 0.125;
+        if(!circleRectCollide(ball.x, ball.y, ball.r, w.x, w.y, w.w, w.h)) break;
+      }
+      // damp velocity
+      ball.vx *= -0.4; ball.vy *= -0.4;
+      // small penalty: if speed large, it's considered a fail (hit hard)
+      if(Math.hypot(ball.vx, ball.vy) > 350){
+        fail = true; running = false; statusBox.textContent = 'Failed: Hit wall hard';
+      }
+    }
+  }
+
+  // check collision with traps => fail
+  for(const t of lv.traps){
+    if(circleRectCollide(ball.x, ball.y, ball.r, t.x, t.y, t.w, t.h)){
+      fail = true; running = false; statusBox.textContent = 'Failed: Hit trap';
+    }
+  }
+
+  // moving obstacles are also lethal (consider them trap-like)
+  for(const m of lv.moving){
+    if(circleRectCollide(ball.x, ball.y, ball.r, m.x, m.y, m.w, m.h)){
+      fail = true; running = false; statusBox.textContent = 'Failed: Hit moving obstacle';
+    }
+  }
+
+  // check if reached goal
+  const dx = ball.x - lv.goal.x, dy = ball.y - lv.goal.y;
+  if(Math.hypot(dx,dy) <= lv.goal.r - 2){
+    finished = true; running = false; statusBox.textContent = 'Level Complete';
+  }
+}
+
+// game loop
+function loop(ts){
+  if(!lastTime) lastTime = ts;
+  const dt = Math.min(0.032, (ts - lastTime) / 1000);
+  lastTime = ts;
+
+  update(dt);
+  draw();
+
+  requestAnimationFrame(loop);
+}
+
+// overlay functions
+function showOverlay(title, subtitle, showRestart=true){
+  // clear existing
+  clearOverlay();
+  const ov = document.createElement('div');
+  ov.className = 'overlay';
+  ov.innerHTML = `<div class="msg"><h2>${title}</h2><p class="small">${subtitle}</p>
+    <div style="margin-top:12px;display:flex;gap:8px;justify-content:center">
+    ${ showRestart ? '<button id="ovRestart">Restart</button>' : '' }
+    <button id="ovNext">Next</button>
+    </div></div>`;
+  overlaySpot.appendChild(ov);
+  if(showRestart){
+    document.getElementById('ovRestart').addEventListener('click', ()=>{ restartLevel(); clearOverlay(); });
+  }
+  document.getElementById('ovNext').addEventListener('click', ()=>{
+    clearOverlay();
+    loadLevel((currentLevel+1) % levels.length);
+  });
+}
+
+function clearOverlay(){ overlaySpot.innerHTML = ''; }
+
+// input handling
+window.addEventListener('keydown', (e)=>{
+  if(e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = true;
+  if(e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = true;
+  if(e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') keys.up = true;
+  if(e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') keys.down = true;
+
+  if(e.key === 'r' || e.key === 'R') restartLevel();
+  if(e.key === 'n' || e.key === 'N') loadLevel((currentLevel+1) % levels.length);
+});
+
+window.addEventListener('keyup', (e)=>{
+  if(e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') keys.left = false;
+  if(e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') keys.right = false;
+  if(e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') keys.up = false;
+  if(e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') keys.down = false;
+});
+
+// mobile swipe support (apply short velocity based on swipe)
+(function addTouch(){
+  let sx=0, sy=0, st=0;
+  canvas.addEventListener('touchstart', e=>{
+    const t = e.touches[0];
+    sx = t.clientX; sy = t.clientY; st = performance.now();
+  }, {passive:true});
+  canvas.addEventListener('touchend', e=>{
+    const t = (e.changedTouches && e.changedTouches[0]) || {};
+    const dx = (t.clientX || sx) - sx;
+    const dy = (t.clientY || sy) - sy;
+    const dt = Math.max(1, (performance.now() - st)/1000);
+    // apply velocity proportional to swipe
+    ball.vx += dx / dt * 0.01;
+    ball.vy += dy / dt * 0.01;
+  }, {passive:true});
+})();
+
+// buttons
+restartBtn.addEventListener('click', ()=>{ restartLevel(); });
+nextBtn.addEventListener('click', ()=>{ loadLevel((currentLevel+1) % levels.length); });
+resetAllBtn.addEventListener('click', ()=>{ resetAll(); });
+
+// initialize
+buildLevels();
+renderLevelList();
+loadLevel(0);
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
