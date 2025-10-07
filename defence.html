@@ -1,0 +1,265 @@
+
+<!doctype html>
+<html lang="ur">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Planet Defence — JavaScript Game</title>
+  <style>
+    :root{
+      --bg:#0b0b0d; --accent:#ff7a18; --muted:#f5f5f5; --panel: rgba(255,255,255,0.03);
+    }
+    html,body{height:100%;margin:0;font-family: system-ui,Segoe UI,Roboto,'Noto Nastaliq Urdu',sans-serif;background:var(--bg);color:var(--muted)}
+    .wrap{display:flex;gap:12px;align-items:flex-start;padding:12px}
+    canvas{background:linear-gradient(180deg,#071020 0%, #001018 60%);border-radius:10px;box-shadow:0 6px 30px rgba(0,0,0,0.6);}
+    .ui{width:320px;min-height:420px;padding:14px;background:var(--panel);border-radius:12px}
+    h1{font-size:20px;margin:4px 0 10px}
+    .row{display:flex;gap:8px;margin-bottom:8px}
+    button{background:transparent;border:1px solid rgba(255,255,255,0.08);padding:8px;border-radius:8px;color:var(--muted);cursor:pointer}
+    .btn-accent{background:linear-gradient(90deg,var(--accent),#ffd28a);border:none;color:#000}
+    .small{font-size:13px;opacity:0.9}
+    .stat{margin:8px 0;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02)}
+    label{display:flex;justify-content:space-between;gap:8px}
+    .controls{font-size:13px;margin-top:10px;line-height:1.5}
+    footer{font-size:12px;opacity:0.8;margin-top:12px}
+    .theme-picker{display:flex;gap:8px;margin-top:8px}
+    .theme-dot{width:34px;height:22px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+    .theme-dot[data-theme="dark"]{background:linear-gradient(90deg,#09090a,#0e1622)}
+    .theme-dot[data-theme="orange"]{background:linear-gradient(90deg,#ff7a18,#ffd28a)}
+    .theme-dot[data-theme="light"]{background:linear-gradient(90deg,#fff,#f3f3f3)}
+    .hint{opacity:0.75;font-size:13px;margin-top:8px}
+    @media (max-width:900px){.wrap{flex-direction:column;align-items:center}.ui{width:100%;max-width:420px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <canvas id="game" width="900" height="600"></canvas>
+    <div class="ui">
+      <h1>Planet Defence — JavaScript Game</h1>
+      <div class="row">
+        <button id="startBtn" class="btn-accent">شروع کریں (Start)</button>
+        <button id="pauseBtn">Pause</button>
+        <button id="restartBtn">Restart</button>
+      </div>
+
+      <div class="stat">
+        <div>اسکور: <span id="score">0</span></div>
+        <div>زندگیاں: <span id="lives">3</span></div>
+        <div>موج: <span id="wave">0</span></div>
+      </div>
+
+      <div class="row small">
+        <div style="flex:1">
+          <label class="small">آواز (Sound) <input type="checkbox" id="soundToggle" checked></label>
+        </div>
+        <div style="flex:1">
+          <label class="small">مشکل (Hard) <input type="checkbox" id="hardToggle"></label>
+        </div>
+      </div>
+
+      <div class="small hint">کترینس: تیر چلانے کے لیے Space / ماؤس کلک کریں۔ بائیں/دائیں تیر یا A/D حرکت۔ R = دوبارہ شروع۔ S = آواز آن/آف۔</div>
+
+      <div style="margin-top:10px">
+        <div class="small">تھیم منتخب کریں:</div>
+        <div class="theme-picker">
+          <div class="theme-dot" data-theme="dark" title="Dark"></div>
+          <div class="theme-dot" data-theme="orange" title="Orange"></div>
+          <div class="theme-dot" data-theme="light" title="Light"></div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <strong>مقصد:</strong> آپ کے سیارے کو نیچے سے آنے والی اینیمیز (asteroids / دشمن) سے بچائیں۔ اینیمیز کو ماریں، پاور اپس لیں، اور زیادہ سے زیادہ سکور حاصل کریں۔
+      </div>
+
+      <footer>نسخہ: Modified — شامل فیچرز: تھیم، ساؤنڈ کنٹرول، مشکل سوئچ، ری اسٹارٹ، پکسل اسٹائل گرافکس.</footer>
+    </div>
+  </div>
+
+  <script>
+    // --- Core game variables ---
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    let W = canvas.width, H = canvas.height;
+
+    // UI elements
+    const startBtn = document.getElementById('startBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const scoreEl = document.getElementById('score');
+    const livesEl = document.getElementById('lives');
+    const waveEl = document.getElementById('wave');
+    const soundToggle = document.getElementById('soundToggle');
+    const hardToggle = document.getElementById('hardToggle');
+
+    // Settings
+    let running = false;
+    let paused = false;
+    let soundOn = true;
+    let hardMode = false;
+
+    // Game state
+    let player, bullets, enemies, particles;
+    let score = 0, lives = 3, wave = 0, spawnTimer = 0, spawnRate = 120;
+
+    function resetGame(){
+      player = {x: W/2, y: H-60, w:40, h:20, speed:6, cooldown:0};
+      bullets = [];
+      enemies = [];
+      particles = [];
+      score = 0; lives = 3; wave = 0; spawnTimer = 0; spawnRate = 100;
+      updateUI();
+    }
+
+    function updateUI(){
+      scoreEl.textContent = score;
+      livesEl.textContent = lives;
+      waveEl.textContent = wave;
+    }
+
+    // --- Input ---
+    const keys = {};
+    window.addEventListener('keydown',e=>{ keys[e.code]=true; if(e.code==='KeyR') restart(); if(e.code==='KeyS'){soundOn=!soundOn; soundToggle.checked=soundOn} if(e.code==='Space'){e.preventDefault(); shoot()} });
+    window.addEventListener('keyup',e=>{ keys[e.code]=false; });
+    canvas.addEventListener('click', e=>{ shoot() });
+
+    // Theme picker
+    document.querySelectorAll('.theme-dot').forEach(d=>d.addEventListener('click', ()=>{
+      const t = d.dataset.theme;
+      if(t==='dark'){ document.documentElement.style.setProperty('--bg','#0b0b0d'); document.documentElement.style.setProperty('--accent','#ff7a18'); document.documentElement.style.setProperty('--muted','#f5f5f5'); }
+      if(t==='orange'){ document.documentElement.style.setProperty('--bg','#10060a'); document.documentElement.style.setProperty('--accent','#ff9a3a'); document.documentElement.style.setProperty('--muted','#ffeede'); }
+      if(t==='light'){ document.documentElement.style.setProperty('--bg','#f5f5f7'); document.documentElement.style.setProperty('--accent','#ff7a18'); document.documentElement.style.setProperty('--muted','#101217'); }
+    }))
+
+    // Buttons
+    startBtn.addEventListener('click', ()=>{ if(!running) startGame(); else { paused=!paused; pauseBtn.textContent = paused? 'Resume':'Pause'; } });
+    pauseBtn.addEventListener('click', ()=>{ paused=!paused; pauseBtn.textContent = paused? 'Resume':'Pause'; });
+    restartBtn.addEventListener('click', restart);
+    soundToggle.addEventListener('change', ()=>{ soundOn = soundToggle.checked });
+    hardToggle.addEventListener('change', ()=>{ hardMode = hardToggle.checked; spawnRate = hardMode? 70:100 });
+
+    function startGame(){ running=true; resetGame(); loop(); }
+    function restart(){ resetGame(); if(!running){ running=true; loop(); } }
+
+    // --- Audio (WebAudio quick effects) ---
+    const audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    function beep(freq, duration=0.06){ if(!soundOn) return; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type='sine'; o.frequency.value=freq; g.gain.value=0.02; o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+duration); }
+    function explosionSound(){ if(!soundOn) return; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type='square'; o.frequency.value=80; g.gain.value=0.1; o.connect(g); g.connect(audioCtx.destination); o.start(); g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime+0.4); o.stop(audioCtx.currentTime+0.45); }
+
+    // --- Game objects ---
+    function spawnWave(){ wave++; let count = 4 + Math.floor(wave*0.8); for(let i=0;i<count;i++){ let r = Math.random(); let size = 18 + Math.random()*36; let ex = Math.random()*(W-60)+30; let ey = -Math.random()*300 - i*60; let speed = 1 + Math.random()*1.6 + wave*0.05; enemies.push({x:ex,y:ey, r:size, vx:(Math.random()-0.5)*0.4, vy:speed, hp: Math.max(1, Math.round(size/18)) }) } }
+
+    function shoot(){ if(player.cooldown>0) return; player.cooldown = 10; bullets.push({x:player.x, y:player.y-14, vy:-9, r:4}); beep(900,0.04); }
+
+    function makeParticle(x,y,dx,dy,life,color){ particles.push({x,y,dx,dy,life,age:0,color}) }
+
+    function rectCircleColl(px,py,pw,ph,cx,cy,cr){ // simple collision
+      // clamp
+      let nearestX = Math.max(px, Math.min(cx, px+pw));
+      let nearestY = Math.max(py, Math.min(cy, py+ph));
+      let dx = cx - nearestX; let dy = cy - nearestY; return (dx*dx+dy*dy) < cr*cr;
+    }
+
+    // --- Main loop ---
+    let last = 0;
+    function loop(t){ if(!running) return; if(paused){ requestAnimationFrame(loop); return; } const dt = Math.min(40, t-last || 16); last = t;
+      // update
+      update(dt/16);
+      // draw
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    function update(dt){ // player movement
+      if(keys['ArrowLeft']||keys['KeyA']) player.x -= player.speed*dt;
+      if(keys['ArrowRight']||keys['KeyD']) player.x += player.speed*dt;
+      player.x = Math.max(20, Math.min(W-20, player.x));
+      if(player.cooldown>0) player.cooldown -= 1*dt;
+
+      // spawn logic
+      spawnTimer += 1;
+      if(spawnTimer > spawnRate){ spawnTimer = 0; spawnWave(); }
+
+      // bullets
+      for(let i=bullets.length-1;i>=0;i--){ let b=bullets[i]; b.y += b.vy*dt; if(b.y<-20) bullets.splice(i,1); }
+
+      // enemies
+      for(let i=enemies.length-1;i>=0;i--){ let e=enemies[i]; e.x += e.vx*dt; e.y += e.vy*dt; // bounce sides
+        if(e.x < 10 || e.x > W-10) e.vx *= -1;
+        // collision with player (planet at bottom)
+        if(rectCircleColl(player.x-18, player.y-10, 36, 18, e.x, e.y, e.r)){
+          // hit planet => lose life
+          explosionSound(); for(let k=0;k<10;k++) makeParticle(e.x, e.y, (Math.random()-0.5)*4, (Math.random()-0.5)*4, 40, 'orange'); enemies.splice(i,1); lives--; updateUI(); if(lives<=0){ gameOver(); return; }
+        }
+        // collision with bullets
+        for(let j=bullets.length-1;j>=0;j--){ let b=bullets[j]; let dx=b.x-e.x, dy=b.y-e.y, dist = Math.sqrt(dx*dx+dy*dy); if(dist < e.r + b.r){ // hit
+            beep(450,0.03);
+            bullets.splice(j,1);
+            e.hp--; e.r -= 2; score += 5; for(let k=0;k<6;k++) makeParticle(e.x, e.y, (Math.random()-0.5)*3, (Math.random()-0.5)*3, 24, 'white');
+            if(e.hp<=0){ explosionSound(); score += 20; for(let k=0;k<18;k++) makeParticle(e.x, e.y, (Math.random()-0.5)*6, (Math.random()-0.5)*6, 40, 'orange'); enemies.splice(i,1); }
+            updateUI(); break;
+        }}
+        // if enemy reached bottom (bypassed planet)
+        if(e.y > H+50){ enemies.splice(i,1); lives--; updateUI(); if(lives<=0){ gameOver(); return; } }
+      }
+
+      // particles
+      for(let i=particles.length-1;i>=0;i--){ let p=particles[i]; p.x += p.dx; p.y += p.dy; p.age++; if(p.age>p.life) particles.splice(i,1); }
+
+      // difficulty scaling
+      if(score > wave*150) { spawnRate = Math.max(48, spawnRate-2); }
+
+    }
+
+    function gameOver(){ running=false; paused=false; alert('Game over! آپ کا سکور: '+score); }
+
+    // --- Drawing ---
+    function draw(){ ctx.clearRect(0,0,W,H);
+      // background stars
+      drawStars();
+
+      // draw planet (player) base
+      ctx.save();
+      // planetary base
+      ctx.fillStyle='rgba(20,20,30,0.8)'; ctx.beginPath(); ctx.ellipse(W/2, H+220, W*0.8, 320, 0, Math.PI, 2*Math.PI); ctx.fill();
+      ctx.restore();
+
+      // player ship
+      ctx.save(); ctx.translate(player.x, player.y);
+      // ship body
+      ctx.fillStyle='white';
+      ctx.beginPath(); ctx.moveTo(-18,10); ctx.lineTo(0,-16); ctx.lineTo(18,10); ctx.closePath(); ctx.fill();
+      ctx.fillStyle='rgba(255,122,24,0.9)'; ctx.fillRect(-6,10,12,6);
+      ctx.restore();
+
+      // bullets
+      for(let b of bullets){ ctx.beginPath(); ctx.fillStyle='white'; ctx.arc(b.x,b.y,b.r,0,Math.PI*2); ctx.fill(); }
+
+      // enemies (asteroids)
+      for(let e of enemies){ ctx.save(); ctx.translate(e.x,e.y); // rough rocky look
+        ctx.beginPath(); for(let a=0;a<7;a++){ let ang = (Math.PI*2/7)*a; let rr = e.r*(0.7+Math.random()*0.4); ctx.lineTo(Math.cos(ang)*rr, Math.sin(ang)*rr); } ctx.closePath(); ctx.fillStyle='rgba(180,180,180,0.95)'; ctx.fill(); ctx.fillStyle='rgba(0,0,0,0.2)'; ctx.fill(); ctx.restore(); }
+
+      // particles
+      for(let p of particles){ ctx.globalAlpha = 1 - (p.age/p.life); ctx.fillStyle = p.color; ctx.fillRect(p.x,p.y,2,2); ctx.globalAlpha = 1; }
+
+      // HUD
+      ctx.fillStyle='rgba(255,255,255,0.06)'; ctx.fillRect(10,10,220,46);
+      ctx.fillStyle='white'; ctx.font='16px sans-serif'; ctx.fillText('Score: '+score,20,32); ctx.fillText('Lives: '+lives,130,32);
+    }
+
+    function drawStars(){ // subtle moving stars
+      ctx.fillStyle='black'; ctx.fillRect(0,0,W,H);
+      for(let i=0;i<80;i++){ let x = (i*57) % W; let y = ((i*37) + (Date.now()/50 % H)); let s = (i%3)+0.6; ctx.fillStyle='rgba(255,255,255,0.05)'; ctx.fillRect((x+((Date.now()/30)%W))%W, (y%H), s, s); }
+    }
+
+    // handle resize gracefully
+    window.addEventListener('resize', ()=>{ const rect = canvas.getBoundingClientRect(); /* keep fixed size for simplicity */ });
+
+    // Start minimized instructions
+    (function(){ /* small intro animation if needed */ } )();
+
+    // Expose one-shot functions for devtools
+    window.__game = {start: startGame, restart: restart, shoot};
+  </script>
+</body>
+</html>
