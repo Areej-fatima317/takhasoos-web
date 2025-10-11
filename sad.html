@@ -1,0 +1,250 @@
+
+<!doctype html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Surah Cards</title>
+  <style>
+    :root{
+      --card-bg: #fff;
+      --accent: #0b5ed7;
+      --muted: #6c757d;
+      --radius: 12px;
+      --shadow: 0 6px 18px rgba(13,38,76,0.08);
+      --container-max: 1100px;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body{background:#f6f8fb;margin:0;padding:36px 18px;color:#222}
+    .wrap{max-width:var(--container-max);margin:0 auto}
+    h1{margin:0 0 20px;font-size:26px;text-align:center}
+
+    /* grid: 3 cards per row on desktop, responsive down */
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:18px;
+    }
+    @media (max-width:980px){
+      .grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:600px){
+      .grid{grid-template-columns:1fr}
+    }
+
+    .card{
+      background:var(--card-bg);
+      border-radius:var(--radius);
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      display:flex;
+      flex-direction:column;
+      transition:transform .18s ease, box-shadow .18s ease;
+    }
+    .card:hover{transform:translateY(-6px);box-shadow:0 12px 28px rgba(13,38,76,0.12)}
+
+    .card .imgwrap{height:160px;background:#eef3fb;display:flex;align-items:center;justify-content:center}
+    .card img{max-width:100%;max-height:100%;object-fit:cover;display:block}
+
+    .card-body{padding:14px 16px;flex:1;display:flex;flex-direction:column}
+    .title{font-weight:700;margin:0 0 6px;font-size:18px}
+    .subtitle{color:var(--muted);margin-bottom:10px;font-size:13px}
+
+    .btn-row{display:flex;gap:8px;margin-top:auto;align-items:center}
+    .btn{
+      background:var(--accent);color:#fff;padding:8px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:600;box-shadow:0 6px 14px rgba(11,94,255,0.12);
+    }
+    .btn.secondary{background:#f1f3f5;color:#333;box-shadow:none}
+
+    /* hidden details area */
+    .detail{
+      max-height:0;overflow:hidden;transition:max-height .28s ease, padding .18s ease;
+      padding:0 16px;background:linear-gradient(180deg,#fff, #fbfdff);
+      font-size:14px;color:#333;
+    }
+    .detail.open{padding:12px 16px;max-height:300px}
+
+    /* small note under image */
+    .img-note{font-size:12px;color:var(--muted);text-align:center;padding:8px}
+
+    /* accessibility focus outline */
+    .btn:focus{outline:3px solid rgba(11,94,255,0.18)}
+
+    /* helper -- image placeholder style */
+    .placeholder-msg{font-size:13px;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Surah Cards </h1>
+    <div class="grid" id="cardsGrid">
+
+      <!-- Card 1 -->
+      <article class="card" data-surah="baqara">
+        <div class="imgwrap">
+          <!-- replace src with your image. attribute placeholder=src kept so you can find it easily -->
+          <img placeholder="src" src="img9.jpg" alt="Surah Baqara image">
+        </div>
+        <div class="img-note"><span class="placeholder-msg"></span></div>
+        <div class="card-body">
+          <h3 class="title">Surah Baqara</h3>
+          <p class="subtitle">Madani — Longest surah. Short intro shown on button click.</p>
+
+          <div class="btn-row">
+            <button class="btn" data-action="toggle" aria-expanded="false">Learn this</button>
+            <button class="btn secondary" data-action="read">Read</button>
+          </div>
+        </div>
+        <div class="detail" aria-hidden="true">
+          <strong>مختصر تعارف:</strong>
+          <p>Surah Al-Baqara Quran ki doosri surah hai. Is mein iman, ibadat aur qanoon se mutaliq bohat si aayaat maujood hain. (Ye aik sample description hai — aap apni tafseel yahan rakh sakte hain.)</p>
+        </div>
+      </article>
+
+      <!-- Card 2 -->
+      <article class="card" data-surah="ikhlas">
+        <div class="imgwrap">
+          <img placeholder="src" src="img12.jpg" alt="Surah Ikhlas image">
+        </div>
+        <div class="img-note"><span class="placeholder-msg"></span></div>
+        <div class="card-body">
+          <h3 class="title">Surah Ikhlas</h3>
+          <p class="subtitle">Makkawi — Tauheed ka khulasa.</p>
+          <div class="btn-row">
+            <button class="btn" data-action="toggle" aria-expanded="false">Learn this</button>
+            <button class="btn secondary" data-action="read">Read</button>
+          </div>
+        </div>
+        <div class="detail" aria-hidden="true">
+          <strong>مختصر تعارف:</strong>
+          <p>Surah Ikhlas chhoti magar bohat ahem surah hai jo Allah ki wahdaniyat ka izhar karti hai.</p>
+        </div>
+      </article>
+
+      <!-- Card 3 -->
+      <article class="card" data-surah="fatiha">
+        <div class="imgwrap">
+          <img placeholder="src" src="img14.jpg" alt="Surah Fatiha image">
+        </div>
+        <div class="img-note"><span class="placeholder-msg"></span></div>
+        <div class="card-body">
+          <h3 class="title">Surah Fatiha</h3>
+          <p class="subtitle">Ummul Kitab — Har namaz ki ibtida.</p>
+          <div class="btn-row">
+            <button class="btn" data-action="toggle" aria-expanded="false">Learn this</button>
+            <button class="btn secondary" data-action="read">Read</button>
+          </div>
+        </div>
+        <div class="detail" aria-hidden="true">
+          <strong>مختصر تعارف:</strong>
+          <p>Surah Al-Fatiha Quran ka qibla hai — ibadat aur rehnumai ki dua ka majmua.</p>
+        </div>
+      </article>
+
+      <!-- Card 4 -->
+      <article class="card" data-surah="nasr">
+        <div class="imgwrap">
+          <img placeholder="src" src="img15.jpg" alt="Surah Nasr image">
+        </div>
+        <div class="img-note"><span class="placeholder-msg"></span></div>
+        <div class="card-body">
+          <h3 class="title">Surah Nasr</h3>
+          <p class="subtitle">Short surah about victory and seeking forgiveness.</p>
+          <div class="btn-row">
+            <button class="btn" data-action="toggle" aria-expanded="false">Learn this</button>
+            <button class="btn secondary" data-action="read">Read</button>
+          </div>
+        </div>
+        <div class="detail" aria-hidden="true">
+          <strong>مختصر تعارف:</strong>
+          <p>Surah An-Nasr podaan aur Allah ki madad se mutaliq aayaat rakhti hai.</p>
+        </div>
+      </article>
+
+      <!-- Card 5 -->
+      <article class="card" data-surah="kahaf">
+        <div class="imgwrap">
+          <img placeholder="src" src="img16.jpg" alt="Surah Kahaf image">
+        </div>
+        <div class="img-note"><span class="placeholder-msg"></span></div>
+        <div class="card-body">
+          <h3 class="title">Surah Kahaf</h3>
+          <p class="subtitle">Haftay mein ek martaba parhna mustahab.</p>
+          <div class="btn-row">
+            <button class="btn" data-action="toggle" aria-expanded="false">Learn this</button>
+            <button class="btn secondary" data-action="read">Read</button>
+          </div>
+        </div>
+        <div class="detail" aria-hidden="true">
+          <strong>مختصر تعارف:</strong>
+          <p>Surah Al-Kahf mein imtihan, daulat aur ilm se mutaliq qisse paaye jatey hain.</p>
+        </div>
+      </article>
+
+      <!-- Card 6 -->
+      <article class="card" data-surah="fatah">
+        <div class="imgwrap">
+          <img placeholder="src" src="img19.jpg" alt="Surah Fatah image">
+        </div>
+        <div class="img-note"><span class="placeholder-msg"></span></div>
+        <div class="card-body">
+          <h3 class="title">Surah Fatah</h3>
+          <p class="subtitle">Short intro for Surah Fatah.</p>
+          <div class="btn-row">
+            <button class="btn" data-action="toggle" aria-expanded="false">Learn this</button>
+            <button class="btn secondary" data-action="read">Read</button>
+          </div>
+        </div>
+        <div class="detail" aria-hidden="true">
+          <strong>مختصر تعارف:</strong>
+          <p>Surah Fatah (sample text) — aap apni tafseel yahan add kar sakte hain.</p>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <script>
+    // Simple JS to toggle the details for each card. No libraries required.
+    (function(){
+      const grid = document.getElementById('cardsGrid');
+      grid.addEventListener('click', function(e){
+        const btn = e.target.closest('button[data-action]');
+        if(!btn) return;
+        const action = btn.getAttribute('data-action');
+        const card = btn.closest('.card');
+        const detail = card.querySelector('.detail');
+
+        if(action === 'toggle'){
+          const isOpen = detail.classList.contains('open');
+          if(isOpen){
+            detail.classList.remove('open');
+            detail.setAttribute('aria-hidden','true');
+            btn.setAttribute('aria-expanded','false');
+          } else {
+            detail.classList.add('open');
+            detail.setAttribute('aria-hidden','false');
+            btn.setAttribute('aria-expanded','true');
+          }
+        }
+
+        if(action === 'read'){
+          // example behaviour: scroll card into view and open detail
+          detail.classList.add('open');
+          detail.setAttribute('aria-hidden','false');
+          const learnBtn = card.querySelector('button[data-action="toggle"]');
+          if(learnBtn) learnBtn.setAttribute('aria-expanded','true');
+          card.scrollIntoView({behavior:'smooth', block:'center'});
+        }
+      });
+
+      // Optional: keyboard support: toggle with Enter when focused on Learn button
+      document.addEventListener('keydown', function(ev){
+        if(ev.key === 'Enter' && document.activeElement && document.activeElement.matches('button[data-action="toggle"]')){
+          document.activeElement.click();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
