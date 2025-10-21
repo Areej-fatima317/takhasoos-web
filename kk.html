@@ -1,0 +1,199 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bill Generator</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+  }
+  body {
+    display: flex;
+    height: 100vh;
+    background-color: #f8f9fa;
+  }
+
+  /* Left Side */
+  .left {
+    width: 30%;
+    background-color: #2f9e44;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+  }
+  .left h2 {
+    font-size: 26px;
+    margin-bottom: 20px;
+  }
+  .left button {
+    background-color: #fff;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    color: #2f9e44;
+    font-weight: bold;
+  }
+  .left button:hover {
+    background-color: #f1f1f1;
+  }
+
+  /* Right Side */
+  .right {
+    width: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .box {
+    background-color: #fff;
+    width: 70%;
+    padding: 30px 40px;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  .box h3 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 22px;
+    color: #333;
+  }
+
+  input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+  }
+
+  .count-btn {
+    width: 100%;
+    background-color: #2f9e44;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .count-btn:hover {
+    background-color: #278b3d;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  table th, table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    font-size: 14px;
+  }
+  table th {
+    background-color: #2f9e44;
+    color: #fff;
+  }
+  .totals {
+    margin-top: 10px;
+    text-align: right;
+    font-weight: bold;
+  }
+
+  @media (max-width: 900px) {
+    body { flex-direction: column; }
+    .left, .right { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="left">
+    <h2>Bill calculator</h2>
+    <button onclick="generateBill()">Generate Bill</button>
+  </div>
+
+  <div class="right">
+    <div class="box">
+      <h3>Enter units</h3>
+
+      <input type="text" id="billType" placeholder="Bill type">
+      <input type="number" id="price" placeholder="Price">
+      <input type="number" id="quantity" placeholder="Units Quantity">
+
+      <button class="count-btn" onclick="addItem()">count units</button>
+
+      <table id="billTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Units</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <div class="totals" id="totalUnits">Total units: 0</div>
+      <div class="totals" id="totalBill">Total bill: 0</div>
+    </div>
+  </div>
+
+<script>
+  let count = 0;
+  let totalUnits = 0;
+  let totalBill = 0;
+
+  function addItem() {
+    const billType = document.getElementById("billType").value.trim();
+    const price = parseFloat(document.getElementById("price").value);
+    const qty = parseInt(document.getElementById("quantity").value);
+
+    if (!billType || isNaN(price) || isNaN(qty)) {
+      alert("Please fill all fields properly!");
+      return;
+    }
+
+    count++;
+    const total = price * qty;
+    totalUnits += qty;
+    totalBill += total;
+
+    const row = `
+      <tr>
+        <td>${count}</td>
+        <td>${billType}</td>
+        <td>${price}</td>
+        <td>${qty}</td>
+        <td>${total}</td>
+      </tr>`;
+    document.querySelector("#billTable tbody").insertAdjacentHTML("beforeend", row);
+
+    document.getElementById("totalUnits").innerText = "Total units: " + totalUnits;
+    document.getElementById("totalBill").innerText = "Total bill: " + totalBill;
+
+    document.getElementById("billType").value = "";
+    document.getElementById("price").value = "";
+    document.getElementById("quantity").value = "";
+  }
+
+  function generateBill() {
+    window.print(); // Opens browser print dialog
+  }
+</script>
+
+</body>
+</html>
