@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AR Stationery Shop (Pro Version)</title>
+<style>
+  * {margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif;}
+  body {display:flex;height:100vh;background-color:#f4f6f8;}
+  .left {
+    width:30%;background-color:#006d77;color:white;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+  }
+  .left h2 {font-size:26px;margin-bottom:20px;}
+  .left button {
+    background-color:#fff;border:none;padding:10px 25px;border-radius:4px;
+    font-size:16px;cursor:pointer;color:#006d77;font-weight:bold;
+  }
+  .left button:hover {background-color:#f1f1f1;}
+
+  .right {width:70%;display:flex;align-items:center;justify-content:center;}
+  .box {
+    background-color:#fff;width:70%;padding:30px 40px;border-radius:6px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+  }
+  .box h3 {text-align:center;margin-bottom:25px;font-size:22px;color:#333;}
+  input {
+    width:100%;padding:10px;margin-bottom:15px;border-radius:4px;border:1px solid #ccc;font-size:15px;
+  }
+  .count-btn {
+    width:100%;background-color:#006d77;color:#fff;border:none;padding:10px;
+    font-size:16px;border-radius:4px;cursor:pointer;
+  }
+  .count-btn:hover {background-color:#045c63;}
+  table {width:100%;border-collapse:collapse;margin-top:20px;}
+  table th, table td {border:1px solid #ddd;padding:8px;text-align:center;font-size:14px;}
+  table th {background-color:#006d77;color:#fff;}
+  .totals {margin-top:10px;text-align:right;font-weight:bold;}
+  @media(max-width:900px){
+    body{flex-direction:column;}
+    .left,.right{width:100%;}
+  }
+</style>
+</head>
+<body>
+
+<div class="left">
+  <h2>AR Stationery</h2>
+  <button onclick="generateReceipt()">Generate Receipt</button>
+</div>
+
+<div class="right">
+  <div class="box">
+    <h3>Add Stationery Items</h3>
+
+    <input type="text" id="itemName" placeholder="Item Name (e.g. Pen, Notebook)">
+    <input type="number" id="price" placeholder="Price per Item">
+    <input type="number" id="quantity" placeholder="Quantity">
+    <button class="count-btn" onclick="addItem()">Add Item</button>
+
+    <hr style="margin:20px 0;">
+    <input type="number" id="discount" placeholder="Discount (%) e.g. 10">
+    <input type="number" id="tax" placeholder="Tax (%) e.g. 5">
+
+    <table id="shopTable">
+      <thead>
+        <tr><th>#</th><th>Item</th><th>Price</th><th>Qty</th><th>Total</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="totals" id="totalItems">Total Items: 0</div>
+    <div class="totals" id="totalAmount">Total Amount: 0</div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+<script>
+let count = 0, totalItems = 0, totalAmount = 0;
+
+function addItem() {
+  const item = document.getElementById("itemName").value.trim();
+  const price = parseFloat(document.getElementById("price").value);
+  const qty = parseInt(document.getElementById("quantity").value);
+
+  if (!item || isNaN(price) || isNaN(qty)) {
+    alert("Please fill all fields properly!");
+    return;
+  }
+
+  count++;
+  const total = price * qty;
+  totalItems += qty;
+  totalAmount += total;
+
+  const row = `
+    <tr>
+      <td>${count}</td>
+      <td>${item}</td>
+      <td>${price}</td>
+      <td>${qty}</td>
+      <td>${total}</td>
+    </tr>`;
+  document.querySelector("#shopTable tbody").insertAdjacentHTML("beforeend", row);
+
+  document.getElementById("totalItems").innerText = "Total Items: " + totalItems;
+  document.getElementById("totalAmount").innerText = "Total Amount: " + totalAmount;
+
+  document.getElementById("itemName").value = "";
+  document.getElementById("price").value = "";
+  document.getElementById("quantity").value = "";
+}
+
+function generateReceipt() {
+  const date = new Date().toLocaleString();
+  const billNo = Math.floor(1000 + Math.random() * 9000);
+  const logoURL = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Stationery_Icon.svg/1024px-Stationery_Icon.svg.png";
+
+  const discountPercent = parseFloat(document.getElementById("discount").value) || 0;
+  const taxPercent = parseFloat(document.getElementById("tax").value) || 0;
+
+  const discountAmount = (totalAmount * discountPercent) / 100;
+  const afterDiscount = totalAmount - discountAmount;
+  const taxAmount = (afterDiscount * taxPercent) / 100;
+  const grandTotal = afterDiscount + taxAmount;
+
+  // QR Code data
+  const qrData = `AR Stationery Shop\nBill No: ${billNo}\nTotal: ${grandTotal} PKR\nDiscount: ${discountPercent}%\nTax: ${taxPercent}%`;
+  const qr = new QRious({ value: qrData, size: 150 });
+
+  const printWin = window.open('', '', 'width=800,height=600');
+  printWin.document.write(`
+    <html>
+      <head>
+        <title>AR Stationery Shop Receipt</title>
+        <style>
+          body { font-family: Arial; padding: 20px; }
+          h2 { color:#006d77; }
+          table { width:100%; border-collapse: collapse; margin-top:20px; }
+          th, td { border:1px solid #ccc; padding:8px; text-align:center; }
+          th { background-color:#006d77; color:white; }
+          .footer { text-align:center; margin-top:40px; font-size:14px; }
+        </style>
+      </head>
+      <body>
+        <div style="text-align:center;">
+          <img src="${logoURL}" width="80" height="80" style="margin-bottom:10px;">
+          <h2>AR Stationery Shop</h2>
+          <p>Near Main Bazar, Lodhran, Pakistan<br>
+          Contact: +92-300-1234567 | Email: arstationery@gmail.com</p>
+        </div>
+        <hr>
+        <p><b>Date & Time:</b> ${date}</p>
+        <p><b>Bill No:</b> ${billNo}</p>
+
+        <table>
+          <thead><tr><th>#</th><th>Item</th><th>Price</th><th>Qty</th><th>Total</th></tr></thead>
+          <tbody>${document.querySelector("#shopTable tbody").innerHTML}</tbody>
+        </table>
+
+        <h3 style="text-align:right;margin-top:20px;">Subtotal: ${totalAmount.toFixed(2)} PKR</h3>
+        <h3 style="text-align:right;">Discount (${discountPercent}%): -${discountAmount.toFixed(2)} PKR</h3>
+        <h3 style="text-align:right;">Tax (${taxPercent}%): +${taxAmount.toFixed(2)} PKR</h3>
+        <h2 style="text-align:right;margin-top:10px;color:#006d77;">Grand Total: ${grandTotal.toFixed(2)} PKR</h2>
+
+        <div style="text-align:center;margin-top:30px;">
+          <img src="${qr.toDataURL()}" width="150" height="150"><br>
+          <small>Scan for Bill Info</small>
+        </div>
+
+        <div class="footer">
+          <p>Thank you for shopping with AR Stationery!</p>
+          <p>Visit Again Soon.</p>
+        </div>
+      </body>
+    </html>
+  `);
+  printWin.document.close();
+  printWin.print();
+}
+</script>
+
+</body>
+</html>
