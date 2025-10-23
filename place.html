@@ -1,161 +1,110 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Modified Calculator</title>
-  <style>
-    :root{
-      --bg:#f3f4f6; --panel:#ffffff; --accent:#2563eb; --text:#111827; --muted:#6b7280;
-    }
-    [data-theme="dark"]{ --bg:#0b1220; --panel:#0f1724; --accent:#60a5fa; --text:#e6eef8; --muted:#9ca3af }
-    *{box-sizing:border-box}
-    body{font-family:Inter,Segoe UI,Roboto,Arial; margin:0; min-height:100vh; background:var(--bg); color:var(--text); display:flex; align-items:center; justify-content:center; padding:20px}
-    .calc{width:360px; background:var(--panel); border-radius:16px; box-shadow:0 10px 30px rgba(2,6,23,0.15); overflow:hidden}
-    .top{display:flex; align-items:center; justify-content:space-between; padding:14px}
-    .title{font-weight:700}
-    .screen{padding:18px; background:linear-gradient(180deg,rgba(0,0,0,0.02),transparent);}
-    .expression{font-size:14px; color:var(--muted); min-height:18px; word-wrap:break-word}
-    .result{font-size:28px; font-weight:600; text-align:right}
-    .keys{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; padding:18px}
-    button.key{padding:16px; font-size:18px; border-radius:10px; border:0; background:#f3f4f6; cursor:pointer}
-    [data-theme="dark"] .key{background:#0b1228}
-    button.op{background:linear-gradient(180deg,var(--accent),#1e40af); color:#fff}
-    .wide{grid-column:span 2}
-    .meta{display:flex; gap:8px}
-    .small{font-size:12px; padding:8px 10px; border-radius:8px; background:transparent; border:1px solid rgba(0,0,0,0.06)}
-    .history{max-height:160px; overflow:auto; padding:8px 18px; border-top:1px dashed rgba(0,0,0,0.04); background:transparent}
-    .hist-item{font-size:13px; color:var(--muted); padding:6px 0; border-bottom:1px dashed rgba(0,0,0,0.03)}
-    footer{padding:10px 18px; font-size:12px; color:var(--muted); display:flex; justify-content:space-between}
-    @media (max-width:420px){ .calc{width:100%} }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Islamic Arts Cards</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to bottom right, #ffd8d8, #fff5ee);
+  }
+
+  h1 {
+    text-align: center;
+    padding: 30px 0 10px 0;
+    color: #444;
+    font-size: 36px;
+    letter-spacing: 1px;
+  }
+
+  .cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-bottom: 50px;
+  }
+
+  .card {
+    background: white;
+    width: 300px;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-8px);
+  }
+
+  .card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 15px;
+  }
+
+  .card h3 {
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  .card p {
+    color: #666;
+    font-size: 15px;
+    line-height: 1.4;
+  }
+</style>
 </head>
-<body data-theme="light">
-  <div class="calc" role="application" aria-label="Calculator">
-    <div class="top">
-      <div class="title">Modified Calculator</div>
-      <div class="meta">
-        <button id="themeToggle" class="small">Dark</button>
-        <button id="clearMemory" class="small">MC</button>
-      </div>
-    </div>
-    <div class="screen">
-      <div id="expr" class="expression">&nbsp;</div>
-      <div id="res" class="result">0</div>
+<body>
+
+  <h1>Islamic Arts</h1>
+
+  <div class="cards-container">
+    <div class="card">
+      <img src="calligraphy.jpg" alt="Islamic Calligraphy">
+      <h3>Islamic Calligraphy</h3>
+      <p>Elegant Arabic scripts with deep spiritual meanings. A form of devotion and beauty.</p>
     </div>
 
-    <div class="keys" id="keys">
-      <button class="key" data-action="clear">C</button>
-      <button class="key" data-action="back">⌫</button>
-      <button class="key" data-action="percent">%</button>
-      <button class="key op" data-value="/">÷</button>
-
-      <button class="key" data-value="7">7</button>
-      <button class="key" data-value="8">8</button>
-      <button class="key" data-value="9">9</button>
-      <button class="key op" data-value="*">×</button>
-
-      <button class="key" data-value="4">4</button>
-      <button class="key" data-value="5">5</button>
-      <button class="key" data-value="6">6</button>
-      <button class="key op" data-value="-">−</button>
-
-      <button class="key" data-value="1">1</button>
-      <button class="key" data-value="2">2</button>
-      <button class="key" data-value="3">3</button>
-      <button class="key op" data-value="+">+</button>
-
-      <button class="key" data-action="plusminus">±</button>
-      <button class="key" data-value="0">0</button>
-      <button class="key" data-value=".">.</button>
-      <button class="key op" data-action="equals">=</button>
-
-      <button class="key wide" data-action="sqrt">√</button>
-      <button class="key" data-action="square">x²</button>
-      <button class="key" data-action="recip">1/x</button>
+    <div class="card">
+      <img src="geometric.jpg" alt="Geometric Patterns">
+      <h3>Geometric Patterns</h3>
+      <p>Precise and beautiful designs symbolizing unity and harmony in Islamic art.</p>
     </div>
 
-    <div class="history" id="history" aria-live="polite"></div>
-    <footer>
-      <div id="memoryStatus">Memory: 0</div>
-      <div>Keyboard supported · Click numbers or use keyboard</div>
-    </footer>
+    <div class="card">
+      <img src="mosaic.jpg" alt="Mosaic Art">
+      <h3>Mosaic Art</h3>
+      <p>Colorful tiles forming spiritual designs seen in mosques and Islamic architecture.</p>
+    </div>
+
+    <div class="card">
+      <img src="arbeseque.png" alt="Arabesque Designs">
+      <h3>Arabesque Designs</h3>
+      <p>Flowing floral patterns representing infinite growth and divine creation.</p>
+    </div>
+
+    <div class="card">
+      <img src="illuminated.png" alt="Illuminated Manuscripts">
+      <h3>Illuminated Manuscripts</h3>
+      <p>Beautifully decorated texts with gold and vibrant colors in Islamic heritage.</p>
+    </div>
+
+    <div class="card">
+      <img src="arcitecture.png" alt="Mosque Architecture">
+      <h3>Mosque Architecture</h3>
+      <p>Domes, minarets, and arches that reflect faith, strength, and elegance.</p>
+    </div>
   </div>
 
-  <script>
-    (function(){
-      const exprEl=document.getElementById('expr');
-      const resEl=document.getElementById('res');
-      const historyEl=document.getElementById('history');
-      let expression='';
-      let memory=0;
-
-      function updateScreen(){
-        exprEl.textContent = expression || '\u00A0';
-      }
-      function setResult(v){ resEl.textContent = (String(v).length>12)?Number(v).toExponential(6):v; }
-
-      function addHistory(e,r){
-        const div=document.createElement('div'); div.className='hist-item'; div.textContent=`${e} = ${r}`; historyEl.prepend(div);
-        // keep last 50
-        while(historyEl.children.length>50) historyEl.removeChild(historyEl.lastChild);
-      }
-
-      function safeEval(expr){
-        // Allow only digits, operators, parentheses and dot
-        if(!/^[0-9+\-*/(). %]+$/.test(expr)) throw new Error('Invalid');
-        // replace % -> /100 for calculation (supports like 50% -> 50/100)
-        expr = expr.replace(/%/g, '/100');
-        // eslint-disable-next-line no-eval
-        return Function('return ('+expr+')')();
-      }
-
-      document.getElementById('keys').addEventListener('click', e=>{
-        const btn=e.target.closest('button'); if(!btn) return;
-        const val=btn.getAttribute('data-value');
-        const action=btn.getAttribute('data-action');
-        if(val){ expression += val; updateScreen(); return; }
-        if(action){
-          if(action==='clear'){ expression=''; setResult(0); updateScreen(); }
-          else if(action==='back'){ expression = expression.slice(0,-1); updateScreen(); }
-          else if(action==='percent'){ expression += '%'; updateScreen(); }
-          else if(action==='equals'){
-            try{ const r=safeEval(expression||'0'); setResult(r); addHistory(expression||'0', r); expression=String(r); updateScreen(); }
-            catch(err){ setResult('Error'); }
-          }
-          else if(action==='sqrt'){ try{ const r=Math.sqrt(safeEval(expression||'0')); addHistory('√('+ (expression||'0') +')', r); setResult(r); expression=String(r); updateScreen(); }catch{setResult('Error')} }
-          else if(action==='square'){ try{ const r=Math.pow(safeEval(expression||'0'),2); addHistory('sqr('+ (expression||'0') +')', r); setResult(r); expression=String(r); updateScreen(); }catch{setResult('Error')} }
-          else if(action==='recip'){ try{ const r=1/safeEval(expression||'0'); addHistory('1/('+ (expression||'0') +')', r); setResult(r); expression=String(r); updateScreen(); }catch{setResult('Error')} }
-          else if(action==='plusminus'){ if(expression.startsWith('-')) expression=expression.slice(1); else expression='-'+expression; updateScreen(); }
-        }
-      });
-
-      // theme & memory
-      document.getElementById('themeToggle').addEventListener('click', ()=>{
-        const body=document.body; const cur=body.getAttribute('data-theme')=== 'dark' ? 'dark' : 'light';
-        body.setAttribute('data-theme', cur==='dark'? 'light':'dark');
-        document.getElementById('themeToggle').textContent = body.getAttribute('data-theme')==='dark' ? 'Light' : 'Dark';
-      });
-
-      document.getElementById('clearMemory').addEventListener('click', ()=>{ memory=0; document.getElementById('memoryStatus').textContent='Memory: 0'; });
-
-      // keyboard support
-      window.addEventListener('keydown', e=>{
-        const k=e.key;
-        if(k.match(/[0-9]/)) expression+=k;
-        else if(k==='.'){ expression+='.'; }
-        else if(k==='Enter'){ e.preventDefault(); document.querySelector('[data-action="equals"]').click(); return; }
-        else if(k==='Backspace'){ document.querySelector('[data-action="back"]').click(); return; }
-        else if(k==='Escape'){ document.querySelector('[data-action="clear"]').click(); return; }
-        else if(k==='+'||k==='-'||k==='*'||k==='/'||k==='('||k===')'){ expression+=k; }
-        updateScreen();
-      });
-
-      // initialize
-      updateScreen(); setResult(0);
-
-    })();
-  </script>
 </body>
 </html>
