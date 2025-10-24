@@ -3,291 +3,286 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PixelWave — Digital Agency</title>
-  <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
-  <!-- AOS for scroll animations -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Todo App</title>
   <style>
     :root{
-      --brand-1: #5b6cff; /* primary */
-      --brand-2: #37e6b8; /* accent */
-      --bg: #0f1724;
-      --card-bg: rgba(255,255,255,0.03);
-      --glass: rgba(255,255,255,0.04);
-      color-scheme: dark;
+      --bg: linear-gradient(120deg, #ffd6dd 0%, #ffdce6 50%, #ffeef3 100%);
+      --card: #ffffff;
+      --accent: #ff5fa8;
+      --soft: #ffedf3;
+      --muted: #a77e93;
+      --radius: 18px;
+      font-family: "Poppins", "Segoe UI", Roboto, Arial, sans-serif;
     }
-    *{box-sizing:border-box}
+
+    html,body{height:100%}
     body{
-      font-family: 'Poppins', system-ui, sans-serif;
-      background: linear-gradient(180deg,#071024 0%, #081229 40%, #071224 100%);
-      color: #e6eef8;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
+      margin:0;
+      min-height:100%;
+      display:grid;
+      place-items:center;
+      background:var(--bg);
+      padding:32px;
     }
-    h1,h2,h3,h4,h5,h6{font-family:'Montserrat', sans-serif;}
-    a{color:var(--brand-1)}
-    .container-xl{padding:2rem}
 
-    /* Navbar */
-    .navbar{backdrop-filter: blur(8px); background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04));}
-    .nav-brand{font-weight:800; letter-spacing:0.3px}
-    .navbar-nav .nav-link{color:#fff !important;}
+    .card{
+      width:360px;
+      max-width:92vw;
+      background:var(--card);
+      border-radius:22px;
+      padding:22px;
+      box-shadow: 0 10px 30px rgba(19,18,20,0.08);
+      border: 1px solid rgba(255,255,255,0.6);
+    }
 
-    /* Hero */
-    .hero{min-height:72vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:4rem 0;}
-    .hero .headline{font-weight:800;font-size:clamp(2rem,4vw,3.6rem);line-height:1.02;animation:fadeInUp 1.2s ease forwards;}
-    .hero .sub{color:rgba(230,238,248,0.8);font-size:1.05rem;margin-top:.6rem;animation:fadeIn 1.8s ease forwards;}
+    h1{
+      margin:0 0 14px 0;
+      text-align:center;
+      color:var(--accent);
+      font-size:22px;
+      letter-spacing:0.2px;
+      font-weight:700;
+    }
 
-    /* Shapes */
-    .shape{position:absolute;border-radius:50%;filter:blur(36px);opacity:.36;mix-blend-mode:screen;transform-origin:center}
-    .shape.s1{width:420px;height:420px;background:linear-gradient(135deg,var(--brand-1),#8b6bff);left:-6%;top:-8%}
-    .shape.s2{width:260px;height:260px;background:linear-gradient(135deg,var(--brand-2),#4fe6c7);right:-6%;bottom:-6%}
+    .input-row{
+      display:flex;
+      gap:10px;
+      margin-bottom:16px;
+    }
 
-    .floating-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:16px; padding:1.25rem; box-shadow: 0 10px 30px rgba(6,8,15,0.6); border:1px solid rgba(255,255,255,0.04); animation:fadeInUp 1s ease forwards;}
-    .mirror-flip{transform:scaleX(-1)}
+    .input-row input{
+      flex:1;
+      padding:12px 14px;
+      border-radius:12px;
+      border:2px solid rgba(255,95,168,0.12);
+      background: #fff7fb;
+      outline:none;
+      font-size:14px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+    }
 
-    /* Services */
-    .services h4{color:#fff;}
-    .services .card{background:var(--card-bg); border:none; border-radius:14px; padding:1.25rem; animation:fadeInUp 1.2s ease forwards;}
-    .service-icon{width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:700}
+    .input-row input:focus{
+      box-shadow: 0 0 0 4px rgba(255,95,168,0.08);
+    }
 
-    /* Advanced banner */
-    .banner{padding:3rem;border-radius:18px;overflow:hidden;position:relative;background:linear-gradient(135deg, rgba(91,108,255,0.12), rgba(55,230,184,0.06));backdrop-filter: blur(6px);border:1px solid rgba(255,255,255,0.03); animation:fadeIn 1.5s ease forwards;}
+    .btn-add{
+      background:var(--accent);
+      color:white;
+      padding:10px 14px;
+      border-radius:12px;
+      border:none;
+      font-weight:700;
+      cursor:pointer;
+      min-width:64px;
+      box-shadow: 0 6px 14px rgba(255,95,168,0.18);
+    }
 
-    /* Testimonials */
-    .testimonial h4{color:#fff;}
-    .testimonial{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02)); padding:1.25rem;border-radius:12px; animation:fadeInUp 1s ease forwards;}
+    ul.todo-list{
+      list-style:none;
+      padding:0;
+      margin:0;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      max-height:52vh;
+      overflow:auto;
+    }
 
-    /* Contact */
-    .contact-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02)); border-radius:12px;padding:1.2rem;animation:fadeInUp 1s ease forwards;}
+    .todo-item{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:12px 14px;
+      border-radius:12px;
+      background:linear-gradient(180deg, #fff3f8 0%, #ffedf3 100%);
+      border: 1px solid rgba(255,95,168,0.06);
+      box-shadow: 0 6px 14px rgba(13,12,15,0.03);
+      font-size:14px;
+      color:#4a2a3b;
+    }
 
-    /* Animations */
-    @keyframes fadeIn {0%{opacity:0;}100%{opacity:1;}}
-    @keyframes fadeInUp {0%{opacity:0; transform:translateY(40px);}100%{opacity:1; transform:translateY(0);}}
+    .todo-text{
+      flex:1;
+      word-break:break-word;
+    }
 
-    /* Mirror toggle */
-    .mirror-toggle{position:fixed;left:1rem;bottom:1rem;z-index:999}
+    .actions{
+      display:flex;
+      gap:8px;
+    }
 
-    footer{padding:2rem 0;color:rgba(230,238,248,0.7);border-top:1px solid rgba(255,255,255,0.02);margin-top:3rem}
+    .btn{
+      background:transparent;
+      border:none;
+      cursor:pointer;
+      padding:6px;
+      border-radius:10px;
+      font-weight:600;
+    }
 
-    @media (max-width:768px){.hero{padding:2rem 0}.shape{display:none}}
+    .btn-delete{
+      color: #c23a6b;
+      background: rgba(194,58,107,0.06);
+    }
 
-    .btn-ghost{border:1px solid rgba(255,255,255,0.06); background:transparent; padding:.6rem 1rem; border-radius:10px}
+    .btn-edit{
+      color: #7b2b6c;
+      background: rgba(123,43,108,0.06);
+    }
 
+    .empty{
+      text-align:center;
+      color:var(--muted);
+      padding:18px 6px;
+      font-size:14px;
+    }
+
+    /* small screens */
+    @media (max-width:420px){
+      .card{padding:16px}
+      h1{font-size:20px}
+      .btn-add{padding:10px}
+    }
   </style>
 </head>
 <body>
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark px-3">
-    <div class="container-xl">
-      <a class="navbar-brand nav-brand" href="#">PixelWave</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navMain">
-        <ul class="navbar-nav ms-auto align-items-lg-center">
-          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-          <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
-          <li class="nav-item"><a class="nav-link" href="#work">Portfolio</a></li>
-          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-          <li class="nav-item ms-3 d-none d-lg-block"><a class="btn btn-primary px-4" href="#contact">Let's Talk</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+  <div class="card" role="application" aria-label="Todo App">
+    <h1>Todo App</h1>
 
-  <!-- HERO -->
-  <header class="hero">
-    <div class="shape s1" aria-hidden></div>
-    <div class="shape s2" aria-hidden></div>
-    <div class="container-xl">
-      <div class="row align-items-center">
-        <div class="col-lg-7">
-          <h1 class="headline">We design digital experiences that grow brands.</h1>
-          <p class="sub">A full-service digital agency — branding, web, apps, and growth marketing. Beautiful interfaces with measurable results.</p>
-          <div class="mt-4 d-flex gap-2">
-            <a href="#contact" class="btn btn-lg btn-primary">Start a Project</a>
-            <a href="#work" class="btn btn-ghost">View Work</a>
-          </div>
-        </div>
-        <div class="col-lg-5 d-none d-lg-block">
-          <div class="card p-3" style="background:transparent;border:none;">
-            <div class="banner mirrorable" id="heroArt">
-              <div class="row align-items-center">
-                <div class="col-6">
-                  <h5 class="mb-3">Featured project</h5>
-                  <h3 class="mb-2">Aurora App Redesign</h3>
-                  <p class="mb-0 text-muted">Modern UI, improved onboarding, +38% activation.</p>
-                </div>
-                <div class="col-6 text-end">
-                  <img src="https://source.unsplash.com/200x200/?technology,app" alt="project" class="rounded-3 shadow" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="input-row" aria-hidden="false">
+      <input id="todoInput" type="text" placeholder="Software update krna he" aria-label="New todo" />
+      <button id="addBtn" class="btn-add">Add</button>
     </div>
-  </header>
 
-  <!-- About & Services -->
-  <section id="about" class="py-5 services">
-    <div class="container-xl">
-      <h4 class="text-white mb-4">Our Services</h4>
-      <div class="row g-3">
-        <div class="col-md-6 col-lg-3">
-          <div class="card">
-            <img src="https://source.unsplash.com/400x250/?ui,design" class="card-img-top rounded" alt="UI/UX" />
-            <div class="card-body">
-              <h5 class="card-title">UI/UX Design</h5>
-              <p class="card-text">Research-led design for delightful products.</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 col-lg-3">
-          <div class="card">
-            <img src="https://source.unsplash.com/400x250/?website,development" class="card-img-top rounded" alt="Web Development" />
-            <div class="card-body">
-              <h5 class="card-title">Web Development</h5>
-              <p class="card-text">Fast, accessible and SEO-friendly websites.</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 col-lg-3">
-          <div class="card">
-            <img src="https://source.unsplash.com/400x250/?branding,design" class="card-img-top rounded" alt="Branding" />
-            <div class="card-body">
-              <h5 class="card-title">Branding</h5>
-              <p class="card-text">Identity systems that tell a consistent story.</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 col-lg-3">
-          <div class="card">
-            <img src="https://source.unsplash.com/400x250/?marketing,digital" class="card-img-top rounded" alt="Growth Marketing" />
-            <div class="card-body">
-              <h5 class="card-title">Growth Marketing</h5>
-              <p class="card-text">Performance campaigns and analytics.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+    <ul id="todoList" class="todo-list" aria-live="polite"></ul>
+    <div id="empty" class="empty" style="display:none">No tasks yet — add something 😊</div>
+  </div>
 
-  <!-- Testimonials -->
-  <section class="py-5 bg-transparent">
-    <div class="container-xl">
-      <h4 class="text-white mb-4">Testimonials</h4>
-      <div id="testiCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-          <div class="carousel-item active">
-            <div class="testimonial p-4">
-              <div class="d-flex align-items-center gap-3 mb-2">
-                <img src="https://source.unsplash.com/80x80/?woman,portrait" class="rounded" alt="client" />
-                <div>
-                  <strong>Sarah J.</strong>
-                  <div class="small text-muted">Head of Product, Nova</div>
-                </div>
-              </div>
-              <p class="mb-0 text-muted">"PixelWave revamped our onboarding. Activation increased by 42% in the first month."</p>
-            </div>
-          </div>
-          <div class="carousel-item">
-            <div class="testimonial p-4">
-              <div class="d-flex align-items-center gap-3 mb-2">
-                <img src="https://source.unsplash.com/80x80/?man,portrait" class="rounded" alt="client" />
-                <div>
-                  <strong>Ali R.</strong>
-                  <div class="small text-muted">Founder, Lyra</div>
-                </div>
-              </div>
-              <p class="mb-0 text-muted">"The new site looks amazing and loads in under 1s. Our bounce rate dropped massively."</p>
-            </div>
-          </div>
-          <div class="carousel-item">
-            <div class="testimonial p-4">
-              <div class="d-flex align-items-center gap-3 mb-2">
-                <img src="https://source.unsplash.com/80x80/?girl,portrait" class="rounded" alt="client" />
-                <div>
-                  <strong>Meera P.</strong>
-                  <div class="small text-muted">CMO, Ember</div>
-                </div>
-              </div>
-              <p class="mb-0 text-muted">"Great team. On time, excellent communication. Highly recommended."</p>
-            </div>
-          </div>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#testiCarousel" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#testiCarousel" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <!-- Contact -->
-  <section id="contact" class="py-5">
-    <div class="container-xl">
-      <div class="row g-4">
-        <div class="col-lg-6">
-          <h4 class="text-white">Get in touch</h4>
-          <p class="text-muted">Tell us about your project. We’ll reply within one business day.</p>
-          <div class="contact-card">
-            <form id="contactForm" novalidate>
-              <div class="mb-3">
-                <label class="form-label">Full name</label>
-                <input type="text" class="form-control" id="name" required>
-                <div class="invalid-feedback">Please enter your full name.</div>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" required>
-                <div class="invalid-feedback">Please enter a valid email.</div>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Message</label>
-                <textarea class="form-control" id="message" rows="4" required></textarea>
-                <div class="invalid-feedback">Tell us a few details about your project.</div>
-              </div>
-              <button class="btn btn-primary" type="submit">Send message</button>
-              <div id="formStatus" class="small text-muted mt-2">No spam — we hate it too.</div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    <div class="container-xl d-flex justify-content-between align-items-center">
-      <div>© <strong>PixelWave</strong> — crafted with care.</div>
-      <div class="small">Follow us on <a href="#">Dribbble</a> · <a href="#">Twitter</a></div>
-    </div>
-  </footer>
-
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // Form validation
-    (() => {
-      'use strict'
-      const form = document.getElementById('contactForm')
-      form.addEventListener('submit', function (event) {
-        event.preventDefault();
-        if (!form.checkValidity()) {
-          event.stopPropagation();
-          form.classList.add('was-validated')
-          document.getElementById('formStatus').textContent = 'Please fix the errors above.'
+    // Simple Todo App with localStorage persistence
+    (function(){
+      const input = document.getElementById('todoInput');
+      const addBtn = document.getElementById('addBtn');
+      const listEl = document.getElementById('todoList');
+      const emptyEl = document.getElementById('empty');
+
+      // Preload sample items similar to your screenshot (only if storage empty)
+      const sample = [
+        "Software update krna he",
+        "abdullah",
+        "ali",
+        "waseem",
+        "aj mujhe koch kam he",
+        "aj yad karna he",
+        "Software update krna he"
+      ];
+
+      let todos = [];
+
+      function save(){
+        localStorage.setItem('my_todos_v1', JSON.stringify(todos));
+      }
+
+      function load(){
+        const raw = localStorage.getItem('my_todos_v1');
+        if(!raw){
+          todos = sample.slice(); // initialize with sample tasks
+          save();
+        } else {
+          try { todos = JSON.parse(raw) || []; }
+          catch(e){ todos = []; }
+        }
+      }
+
+      function render(){
+        listEl.innerHTML = '';
+        if(todos.length === 0){
+          emptyEl.style.display = 'block';
+        } else {
+          emptyEl.style.display = 'none';
+        }
+
+        todos.forEach((t, idx) => {
+          const li = document.createElement('li');
+          li.className = 'todo-item';
+
+          const span = document.createElement('div');
+          span.className = 'todo-text';
+          span.textContent = t;
+
+          const actions = document.createElement('div');
+          actions.className = 'actions';
+
+          const editBtn = document.createElement('button');
+          editBtn.className = 'btn btn-edit';
+          editBtn.title = 'Edit';
+          editBtn.textContent = 'Edit';
+          editBtn.onclick = () => startEdit(idx);
+
+          const delBtn = document.createElement('button');
+          delBtn.className = 'btn btn-delete';
+          delBtn.title = 'Delete';
+          delBtn.textContent = 'Delete';
+          delBtn.onclick = () => removeTodo(idx);
+
+          actions.appendChild(editBtn);
+          actions.appendChild(delBtn);
+
+          li.appendChild(span);
+          li.appendChild(actions);
+
+          listEl.appendChild(li);
+        });
+      }
+
+      function addTodo(text){
+        const val = text.trim();
+        if(!val) return;
+        todos.unshift(val); // latest on top (like screenshot)
+        save();
+        render();
+      }
+
+      function removeTodo(i){
+        if(i < 0 || i >= todos.length) return;
+        todos.splice(i,1);
+        save();
+        render();
+      }
+
+      function startEdit(i){
+        const newVal = prompt('Edit task:', todos[i]);
+        if(newVal === null) return; // cancelled
+        const trimmed = newVal.trim();
+        if(trimmed === ''){
+          // if user left empty, remove
+          if(confirm('Empty text — remove this task?')) removeTodo(i);
           return;
         }
-        document.getElementById('formStatus').textContent = 'Sending…'
-        setTimeout(()=>{
-          form.reset(); form.classList.remove('was-validated');
-          document.getElementById('formStatus').textContent = 'Thanks — we will reply within
+        todos[i] = trimmed;
+        save();
+        render();
+      }
+
+      // events
+      addBtn.addEventListener('click', () => {
+        addTodo(input.value);
+        input.value = '';
+        input.focus();
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter'){
+          addTodo(input.value);
+          input.value = '';
+        }
+      });
+
+      // init
+      load();
+      render();
+    })();
+  </script>
+</body>
+</html>
