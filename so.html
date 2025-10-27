@@ -1,0 +1,453 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AR Web Development Academy</title>
+  <link rel="icon" type="image/png" href="img0.jpg">
+  <style>
+    :root{--primary:#0b74da;--muted:#f4f6fb;--card:#ffffff;--text:#222}
+    *{box-sizing:border-box}
+    body{font-family:Inter, system-ui, Arial, sans-serif;margin:0;color:var(--text);background:linear-gradient(180deg,#fbfdff 0%,#ffffff 100%)}
+    header{background:#fff;box-shadow:0 2px 8px rgba(11,116,218,0.06);position:sticky;top:0;z-index:50}
+    .container{max-width:1100px;margin:0 auto;padding:0 18px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .logo{display:flex;align-items:center;gap:12px}
+    .logo img{height:48px;width:48px;border-radius:8px}
+    nav ul{display:flex;gap:12px;list-style:none;margin:0;padding:0}
+    nav a{padding:8px 12px;text-decoration:none;color:var(--text);border-radius:6px}
+    nav a.cta{background:var(--primary);color:#fff}
+
+    /* HERO / SLIDER */
+    .hero{display:grid;grid-template-columns:1fr;gap:18px;padding:28px 0}
+    .slider{position:relative;overflow:hidden;border-radius:12px}
+    .slides{display:flex;transition:transform 0.6s ease}
+    .slide{min-width:100%;display:flex;align-items:center;justify-content:center;position:relative;height:320px}
+    .slide img{width:100%;height:320px;object-fit:cover;filter:brightness(0.65)}
+    .slide .caption{position:absolute;left:28px;bottom:28px;color:#fff;max-width:70%}
+    .slide h1{margin:0;font-size:28px}
+    .slide p{margin:6px 0 0}
+    .slider-controls{position:absolute;right:12px;top:12px;display:flex;gap:8px}
+    .dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.5)}
+    .dot.active{background:#fff}
+
+    /* Sections */
+    section{padding:36px 0}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center}
+    .two-col img{width:100%;border-radius:12px;box-shadow:0 6px 20px rgba(16,24,40,0.06)}
+    .card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .card{background:var(--card);padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(16,24,40,0.04)}
+    .card img{width:100%;height:140px;object-fit:cover;border-radius:8px}
+    .card p{margin:8px 0 0;font-size:14px}
+    .card .readmore{display:inline-block;margin-top:8px;padding:8px 12px;border-radius:8px;background:var(--muted);cursor:pointer}
+
+    /* Courses and tools */
+    .courses{display:flex;gap:12px}
+    .course{flex:1;padding:18px;border-radius:12px;background:linear-gradient(180deg,#fff,#f8fbff);box-shadow:0 6px 18px rgba(11,116,218,0.06)}
+    .fees table{width:100%;border-collapse:collapse}
+    .fees th,.fees td{padding:8px;border:1px solid #eee;text-align:left}
+
+    /* FAQs & contact */
+    .faqs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .faq-box{padding:14px;border-radius:10px;background:#fff}
+    form .row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    form input,form textarea,form select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6eefb}
+    form textarea{min-height:120px}
+    .btn{display:inline-block;padding:10px 14px;border-radius:8px;background:var(--primary);color:#fff;border:none;cursor:pointer}
+
+    footer{padding:30px 0;text-align:center;color:#666}
+
+    /* Responsive */
+    @media (max-width:900px){.card-grid{grid-template-columns:repeat(2,1fr)}.two-col{grid-template-columns:1fr}.courses{flex-direction:column}.card-grid .card img{height:120px}}
+    @media (max-width:560px){nav ul{display:none}.hero .slide{height:220px}.slide img{height:220px}.card-grid{grid-template-columns:1fr}.header-compact{display:flex;align-items:center;gap:8px}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container topbar">
+      <div class="logo">
+        <img src="img0.jpg" alt="AR" />
+        <div>
+          <strong>AR Web Development Academy</strong>
+          <div style="font-size:12px;color:#6b7280">Learn. Build. Launch.</div>
+        </div>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#services">Our Services</a></li>
+          <li><a href="#courses">Courses</a></li>
+          <li><a href="#fees">Fee Structure</a></li>
+          <li><a href="#faqs">FAQs</a></li>
+          <li><a href="#contact">Contact Us</a></li>
+          <li><a class="cta" href="#register">Register Now</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- HOME / SLIDER -->
+    <section id="home" class="hero">
+      <div class="slider" aria-roledescription="carousel">
+        <div class="slides" id="slides">
+          <div class="slide">
+            <img src="img2.jpg" alt="slide1">
+            <div class="caption">
+              <h1>Welcome to our Web Development Academy</h1>
+              <p>Professional courses in HTML, CSS, JavaScript, GitHub & AI tools.</p>
+            </div>
+          </div>
+          <div class="slide">
+            <img src="img3.jpg" alt="slide2">
+            <div class="caption">
+              <h1>Build real projects — Portfolio ready</h1>
+              <p>Hands-on training, assignments and mentorship.</p>
+            </div>
+          </div>
+          <div class="slide">
+            <img src="img4.jpg" alt="slide3">
+            <div class="caption">
+              <h1>Start your career in tech</h1>
+              <p>From basics to advanced — join now.</p>
+            </div>
+          </div>
+        </div>
+        <div class="slider-controls" id="dots"></div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <div class="two-col">
+        <div>
+          <h2>About Us</h2>
+          <p>1. AR Web Development Academy aims to provide practical web development education.</p>
+          <p>2. Courses designed for beginners to advanced students.</p>
+          <p>3. Instructors with real industry experience.</p>
+          <p>4. Project-based learning to build a professional portfolio.</p>
+          <p>5. Flexible timings and hands-on mentorship.</p>
+          <p>6. Career counselling and interview preparation.</p>
+          <p>7. Affordable fees with instalment options.</p>
+        </div>
+        <div>
+          <img src="img6.jpg" alt="About image">
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section id="services">
+      <div class="two-col">
+        <div>
+          <img src="img7.jpg" alt="Services image">
+        </div>
+        <div>
+          <h2>Our Services</h2>
+          <p>1. Full web development training (HTML/CSS/JS).</p>
+          <p>2. GitHub and version control workshop.</p>
+          <p>3. AI tools integration and practical use-cases.</p>
+          <p>4. Live project mentorship and code reviews.</p>
+          <p>5. CV and portfolio preparation.</p>
+          <p>6. Freelancing and client-management training.</p>
+          <p>7. Ongoing support after course completion.</p>
+        </div>
+      </div>
+
+      <div style="margin-top:22px">
+        <h3>Featured Programs</h3>
+        <div class="card-grid">
+          <!-- 6 cards -->
+          <div class="card">
+            <img src="img8.jpg" alt="HTML">
+            <h4>HTML & CSS</h4>
+            <p>Learn structure and styling to build responsive websites.</p>
+            <p class="short-info">Practical exercises and project work.</p>
+            <span class="readmore" data-id="r1">Read more</span>
+            <div class="more" id="r1" style="display:none;margin-top:8px">Detailed curriculum: semantic HTML, Flexbox, Grid, responsive techniques, accessibility basics.</div>
+          </div>
+
+          <div class="card">
+            <img src="img9.jpg" alt="JS">
+            <h4>JavaScript</h4>
+            <p>Core programming concepts and DOM manipulation.</p>
+            <p class="short-info">Build interactive web apps.</p>
+            <span class="readmore" data-id="r2">Read more</span>
+            <div class="more" id="r2" style="display:none;margin-top:8px">Detailed curriculum: ES6+, async programming, fetch API, modules, and small projects.</div>
+          </div>
+
+          <div class="card">
+            <img src="img10.jpg" alt="GitHub">
+            <h4>Git & GitHub</h4>
+            <p>Version control and collaboration workflow.</p>
+            <p class="short-info">Push code and manage branches.</p>
+            <span class="readmore" data-id="r3">Read more</span>
+            <div class="more" id="r3" style="display:none;margin-top:8px">Detailed curriculum: init, commit, branching, pull requests, GitHub Pages deployment.</div>
+          </div>
+
+          <div class="card">
+            <img src="img11.jpg" alt="React">
+            <h4>React Basics</h4>
+            <p>Component-driven UI development.</p>
+            <p class="short-info">Learn props, state and routing.</p>
+            <span class="readmore" data-id="r4">Read more</span>
+            <div class="more" id="r4" style="display:none;margin-top:8px">Detailed curriculum: components, hooks, state management and deploying React apps.</div>
+          </div>
+
+          <div class="card">
+            <img src="img12.jpg" alt="AI">
+            <h4>AI Tools</h4>
+            <p>Using AI to boost productivity and build smarter apps.</p>
+            <p class="short-info">Prompting, API basics and tools overview.</p>
+            <span class="readmore" data-id="r5">Read more</span>
+            <div class="more" id="r5" style="display:none;margin-top:8px">Detailed curriculum: prompt engineering, integrations with JavaScript and automation use-cases.</div>
+          </div>
+
+          <div class="card">
+            <img src="img13.jpg" alt="Portfolio">
+            <h4>Portfolio Project</h4>
+            <p>Build a real portfolio site to show to employers/clients.</p>
+            <p class="short-info">Hosted and deployed live.</p>
+            <span class="readmore" data-id="r6">Read more</span>
+            <div class="more" id="r6" style="display:none;margin-top:8px">Detailed curriculum: design to deployment, optimization and SEO basics.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COURSES -->
+    <section id="courses">
+      <h2>Our Courses</h2>
+      <div class="courses">
+        <div class="course">
+          <h3>Web Development</h3>
+          <p>Full-stack approach: front-end fundamentals, JavaScript, and a backend intro.</p>
+          <ul>
+            <li>HTML & CSS</li>
+            <li>JavaScript</li>
+            <li>React basics</li>
+            <li>Project work</li>
+          </ul>
+        </div>
+        <div class="course">
+          <h3>AI Tools & Automation</h3>
+          <p>Learn popular AI tools useful for developers and automation.</p>
+          <ul>
+            <li>Prompt engineering basics</li>
+            <li>Using APIs in projects</li>
+            <li>Practical automation</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Fee Structure -->
+    <section id="fees" class="fees">
+      <h2>Fee Structure</h2>
+      <table>
+        <thead>
+          <tr><th>Course</th><th>Duration</th><th>Fee (PKR)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>HTML & CSS</td><td>6 weeks</td><td>12,000</td></tr>
+          <tr><td>JavaScript</td><td>8 weeks</td><td>18,000</td></tr>
+          <tr><td>Full Web Dev</td><td>16 weeks</td><td>45,000</td></tr>
+          <tr><td>AI Tools</td><td>6 weeks</td><td>20,000</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- How to join -->
+    <section id="how-to-join">
+      <div class="two-col">
+        <div>
+          <img src="img14.jpg" alt="Join">
+        </div>
+        <div>
+          <h2>How to join AR Web Development Academy</h2>
+          <p>1. Choose your preferred course from the Courses section.</p>
+          <p>2. Click Register Now or fill the contact & registration form below.</p>
+          <p>3. Pay the fee or select instalment plan.</p>
+          <p>4. Send your payment receipt to WhatsApp/email.</p>
+          <p>5. Start classes on the announced date.</p>
+          <p>6. Get access to course materials and community.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Students Enrol & AI Tools -->
+    <section id="enrol">
+      <h2>Students Enrolled</h2>
+      <p>Our batches include students from different backgrounds — beginners to professionals.</p>
+
+      <h3 style="margin-top:18px">AI Tools We Teach</h3>
+      <div class="card-grid" style="margin-top:8px">
+        <!-- 6 AI tool cards -->
+        <div class="card">
+          <img src="img16.jpg" alt="t1">
+          <h4>LMAreena</h4>
+          <p>LMA Reena is a talented and creative student who always shows dedication in her work.
+Her positive attitude and passion for learning make her stand out from others.
+She always brings new ideas and positive energy to the team.
+</p>
+        </div>
+        <div class="card">
+          <img src="img17.jpg" alt="t2">
+          <h4>Clude.ai</h4>
+          <p>Clude.ai is an advanced AI platform designed to simplify complex tasks with intelligent automation.
+It helps users improve productivity through smart tools and data-driven insights.
+With its modern technology, Clude.ai makes everyday digital work faster, easier, and more efficient.
+</p>
+        </div>
+        <div class="card">
+          <img src="img18.jpg" alt="t3">
+          <h4>Chatgpt</h4>
+          <p>ChatGPT is an advanced AI language model developed by OpenAI.
+It can understand and generate human-like text to answer questions, write content, and assist with learning.
+People use ChatGPT for writing, coding, studying, and solving daily tasks efficiently.
+</p>
+        </div>
+        <div class="card">
+          <img src="img19.jpg" alt="t4">
+          <h4>Grook ai</h4>
+          <p>Grok AI is a smart chatbot created by Elon Musk’s company xAI.
+It gives real-time answers using data from X (Twitter) and the internet.
+Grok AI helps with chatting, coding, and creative content just like ChatGPT.
+</p>
+        </div>
+        <div class="card">
+          <img src="img20.jpg" alt="t5">
+          <h4>Deepseek</h4>
+          <p>DeepSeek is an advanced AI chatbot developed in China to compete with global AI models.
+It can perform complex tasks like reasoning, coding, and multilingual communication.
+DeepSeek is powerful but also raises privacy and data security concerns.
+</p>
+        </div>
+        <div class="card">
+          <img src="img221.jpg" alt="t6">
+          <h4>AI</h4>
+          <p>AI (Artificial Intelligence) is the technology that enables machines to think and learn like humans.
+It helps in solving problems, recognizing patterns, and making smart decisions.
+AI is used in many fields like healthcare, education, business, and daily life to make tasks easier and faster.
+</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQs -->
+    <section id="faqs">
+      <h2>FAQs</h2>
+      <div class="faqs">
+        <div class="faq-box">
+          <strong>Q: Who can join?</strong>
+          <p>A: Anyone with basic computer knowledge — courses for beginners to advanced.</p>
+        </div>
+        <div class="faq-box">
+          <strong>Q: Do you provide certificates?</strong>
+          <p>A: Yes, on successful completion of projects and final assessment.</p>
+        </div>
+        <div class="faq-box">
+          <strong>Q: How are classes delivered?</strong>
+          <p>A: Online live sessions and recorded materials for review.</p>
+        </div>
+        <div class="faq-box">
+          <strong>Q: Are instalments available?</strong>
+          <p>A: Yes — contact us for instalment plans.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT & REGISTER -->
+    <section id="contact">
+      <h2>Contact & Register</h2>
+      <div class="two-col">
+        <div>
+          <img src="img15.jpg" alt="contact">
+        </div>
+        <div>
+          <form id="regForm">
+            <div class="row">
+              <input type="text" name="name" placeholder="Name*" required>
+              <input type="text" name="father" placeholder="Father Name">
+            </div>
+            <div class="row" style="margin-top:8px">
+              <input type="email" name="email" placeholder="Email*" required>
+              <input type="text" name="cnic" placeholder="CNIC No">
+            </div>
+            <div class="row" style="margin-top:8px">
+              <input type="text" name="contact" placeholder="Contact No*" required>
+              <input type="text" name="whatsapp" placeholder="WhatsApp No">
+            </div>
+            <div class="row" style="margin-top:8px">
+              <input type="date" name="dob" placeholder="Birth Date">
+              <select name="course">
+                <option value="">Select Course</option>
+                <option>HTML & CSS</option>
+                <option>JavaScript</option>
+                <option>Full Web Dev</option>
+                <option>AI Tools</option>
+              </select>
+            </div>
+            <div style="margin-top:8px">
+              <textarea name="message" placeholder="Message"></textarea>
+            </div>
+
+            <div style="margin-top:12px;display:flex;gap:10px;align-items:center">
+              <label style="font-size:13px"><input type="checkbox" name="privacy" required> I agree to the privacy policy</label>
+              <button class="btn" type="submit">Send / Register</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>&copy; <span id="year"></span> AR Web Development Academy — All rights reserved.</p>
+    </footer>
+  </main>
+
+  <script>
+    // Slider
+    const slidesEl = document.getElementById('slides');
+    const slides = slidesEl.children;
+    const dotsEl = document.getElementById('dots');
+    let idx = 0;
+    function buildDots(){
+      for(let i=0;i<slides.length;i++){
+        const d = document.createElement('div');d.className='dot';d.dataset.i=i;d.addEventListener('click',()=>{goTo(i)});dotsEl.appendChild(d);
+      }
+      updateDots();
+    }
+    function updateDots(){
+      [...dotsEl.children].forEach((d,i)=>d.classList.toggle('active',i===idx));
+    }
+    function goTo(i){idx=i;slidesEl.style.transform=`translateX(-${i*100}%)`;updateDots()}
+    function next(){idx=(idx+1)%slides.length;goTo(idx)}
+    buildDots();
+    let timer=setInterval(next,4000);
+    slidesEl.addEventListener('mouseenter',()=>clearInterval(timer));
+    slidesEl.addEventListener('mouseleave',()=>timer=setInterval(next,4000));
+
+    // Read more toggles
+    document.querySelectorAll('.readmore').forEach(btn=>{
+      btn.addEventListener('click',e=>{
+        const id=btn.dataset.id;const el=document.getElementById(id);
+        if(el.style.display==='none'){el.style.display='block';btn.textContent='Read less'}else{el.style.display='none';btn.textContent='Read more'}
+      })
+    })
+
+    // Form submission (demo)
+    document.getElementById('regForm').addEventListener('submit',function(e){
+      e.preventDefault();
+      const data = new FormData(this);const obj={};data.forEach((v,k)=>obj[k]=v);
+      alert('Thank you! Your registration details have been received.\n(This demo does not actually send data.)');
+      this.reset();
+    })
+
+    // Footer year
+    document.getElementById('year').textContent=new Date().getFullYear();
+  </script>
+</body>
+</html>
